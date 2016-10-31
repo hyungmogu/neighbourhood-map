@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<style>
+	body {
+		margin: 0px;
+	} 
+
+	#map {
+		width: 500px;
+		height:450px;
+	}
+</style>
+<body>
+	<section id="map">
+
+	</section>
+	<section id="list">
+		<ul data-bind="foreach: listView">
+			<li><button id='location-1' data-bind="text: _name, attr:{id: 'location-'+($index()+1)}"></button></li>
+		</ul>
+	</section>
+</body>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBUabBcP-ET0E8q5Z-ENklcJOobDGPnSI&callback=initMap"></script>
+<script src="./js/knockout-3.4.0.js"></script>
+<script src="./js/app.js"></script>
+</html>
