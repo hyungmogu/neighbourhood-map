@@ -6,7 +6,7 @@
 <style>
 	body {
 		margin: 0px;
-	} 
+	}
 
 	#map {
 		width: 500px;
@@ -17,9 +17,14 @@
 	<section id="map">
 
 	</section>
+	<section id='buttons'>
+		<button id="button-all">All</button>
+		<button id="button-1">Button 1</button>
+		<button id="button-2">Button 2</button>
+	</section>
 	<section id="list">
 		<ul data-bind="foreach: listView">
-			<li><button id='location-1' data-bind="text: _name, attr:{id: 'location-'+($index()+1)}"></button></li>
+			<li><button data-bind="text: _name, attr:{id: 'location-'+($index()+1)}"></button></li>
 		</ul>
 	</section>
 </body>
