@@ -1,7 +1,7 @@
 var locations = [
 	{
 		_name: "Place 1",
-		content: "hi", 
+		content: "hi",
 		latlng: {lat: 52.08924, lng: -114.160540}
 	},
 	{
@@ -28,54 +28,55 @@ var locations = [
 
 function initMap() {
 	//init
-
 	var home = locations[0].latlng
 	var labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
 	var map = new google.maps.Map(document.getElementById('map'),{
 		zoom: 10,
 		center: home
 	});
-
 	var infoWindow = new google.maps.InfoWindow({
-		maxWidth: 250 
+		maxWidth: 250
 	});
 
-	var markers = locations.map(function(location,i){
-		var marker = new google.maps.Marker({
-			position: location.latlng,
-			label: labels[i % labels.length],
-			map: map,
-			title: location._name
-		});
+	addMarkers(map,locations,labels,infoWindow);
+
+};
+
+function addMarkers(MAP,DATASET,LABELS,INFOWINDOW){
+	DATASET.map(function(location,i){
 
 		var content = location.content;
 
+		var marker = new google.maps.Marker({
+			position: location.latlng,
+			label: LABELS[i % LABELS.length],
+			map: MAP,
+			title: location._name
+		});
+
 		google.maps.event.addDomListener(document.getElementById('location-'+(i+1)),'click',function(){
-			map.setCenter(marker.getPosition());
-			setupInfoWindow(map,marker,content);
-		}); 
+			setupInfoWindow(MAP,marker,content,INFOWINDOW);
+		});
 
 		marker.addListener('click', function(){
-			map.setCenter(marker.getPosition());
-			setupInfoWindow(map,marker,content);
-		});  	
+			setupInfoWindow(MAP,marker,content,INFOWINDOW);
+		});
 	});
+};
 
-	var setupInfoWindow = function(MAP,MARKER,CONTENT) {
-		infoWindow.setContent('<div>'+CONTENT+'</div>');
-		infoWindow.open(MAP,MARKER);
-	}; 
-
+function setupInfoWindow(MAP,MARKER,CONTENT,INFOWINDOW) {
+	MAP.setCenter(MARKER.getPosition());
+	INFOWINDOW.setContent('<div>'+CONTENT+'</div>');
+	INFOWINDOW.open(MAP,MARKER);
 };
 
 var viewModel = function() {
 	var self = this;
-	self.listView = ko.observableArray(locations);	
+	self.listView = ko.observableArray(locations);
 
-}; 
+};
 
-ko.applyBindings(new viewModel); 
+ko.applyBindings(new viewModel);
 
 
 
