@@ -1,28 +1,66 @@
 var allLocations = [
 	{
-		_name: "Place 1",
+		_name: "2015 Alberta Business Fair",
 		content: "hi",
-		latlng: {lat: 52.08924, lng: -114.160540}
+		latlng: {lat: 52.08924, lng: -114.160540},
+		keywords: ['alberta','calgary','stampede','business']
 	},
 	{
-		_name: "Place 2",
+		_name: "Alberta Business Networking",
 		content: "hi 2",
 		latlng: {lat: 51.08920, lng: -112.160640},
+		keywords: ['alberta','business','networking']
 	},
 	{
-		_name: "Place 3",
+		_name: "Edmonton Speed Dating",
 		content: "hi 3",
 		latlng:{lat: 53.08912, lng: -111.160735},
+		keywords: ['alberta','edmonton','dating']
 	},
 	{
-		_name: "Place 4",
+		_name: "Alberta sex gathering",
 		content: "hi 4",
 		latlng:{lat: 51.08924, lng: -118.160749},
+		keywords: ['alberta','sex','dating']
 	},
 	{
-		_name: "Place 5",
+		_name: "Make Alberta Social Again",
 		content: "hi 5",
-		latlng:{lat: 50.09025, lng: -117.160742}
+		latlng:{lat: 50.09025, lng: -117.160742},
+		keywords: ['alberta','meetup']
+	}
+];
+
+var filteredLocations2 = [
+	{
+		_name: "2015 Alberta Business Fair",
+		content: "hi",
+		latlng: {lat: 52.08924, lng: -114.160540},
+		keywords: ['alberta','calgary','stampede','business']
+	},
+	{
+		_name: "Alberta Business Networking",
+		content: "hi 2",
+		latlng: {lat: 51.08920, lng: -112.160640},
+		keywords: ['alberta','business','networking']
+	},
+	{
+		_name: "Edmonton Speed Dating",
+		content: "hi 3",
+		latlng:{lat: 53.08912, lng: -111.160735},
+		keywords: ['alberta','edmonton','dating']
+	},
+	{
+		_name: "Alberta sex gathering",
+		content: "hi 4",
+		latlng:{lat: 51.08924, lng: -118.160749},
+		keywords: ['alberta','sex','dating']
+	},
+	{
+		_name: "Make Alberta Social Again",
+		content: "hi 5",
+		latlng:{lat: 50.09025, lng: -117.160742},
+		keywords: ['alberta','meetup']
 	}
 ];
 
@@ -141,9 +179,59 @@ function setupInfoWindow(MAP,MARKER,CONTENT,INFOWINDOW) {
 
 var viewModel = function() {
 	var self = this;
-	self.listView = ko.observableArray(allLocations);
-
+	self.listView = ko.observableArray(filteredLocations2);
+	self.showErrorIfExists= "";
+	self.filterListView = ko.computed({
+		read: function() {
+			return query.getValue();
+		},
+		write: function() {
+			if (!query.isEmpty()) {
+				var list = query.generateFilteredList();
+				if(list.length > 0){
+					self.listView.removeAll();
+					for (i = 0; i < list.length; i++) {
+						self.listView.push(list[i]);
+					}
+				} else {
+					self.listView.removeAll();
+					self.showErrorIfExists = "No result found";
+				}
+			} else {
+				console.log('query is empty');
+				self.listView.removeAll();
+				for (i = 0; i < allLocations.length; i++) {
+					self.listView.push(allLocations[i]);
+				}
+			}
+		}
+	});
 };
+
+var query = {
+	getValue: function() {
+		return document.getElementById('search').value;
+	},
+	isEmpty: function() {
+		if (query.getValue() === "") {
+			return true;
+		} else {
+			return false;
+		}
+	},
+	generateFilteredList: function() {
+		var query= this.getValue();
+		var list = [];
+		for(i = 0; i < allLocations.length; i++) {
+			console.log(allLocations[i].keywords.indexOf(query));
+			if (allLocations[i].keywords.indexOf(query) != -1){
+				list.push(allLocations[i]);
+			}
+		}
+		return list;
+	}
+}
+
 
 ko.applyBindings(new viewModel);
 

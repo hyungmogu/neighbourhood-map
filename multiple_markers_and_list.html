@@ -18,6 +18,11 @@
 
 	</section>
 	<section id='filter'>
+		<form data-bind="submit:filterListView">
+			<input type="text" id="search">
+			<input type="submit">
+		</form>
+		<p data-bind="text:showErrorIfExists"></p>
 		<select id="filter-menu">
 			<option value="0">All</option>
 			<option value="1">Button 1</option>
