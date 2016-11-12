@@ -180,7 +180,7 @@ function setupInfoWindow(MAP,MARKER,CONTENT,INFOWINDOW) {
 var viewModel = function() {
 	var self = this;
 	self.listView = ko.observableArray(filteredLocations2);
-	self.showErrorIfExists= "";
+	self.showErrorIfExists= ko.observable("");
 	self.filterListView = ko.computed({
 		read: function() {
 			return query.getValue();
@@ -194,8 +194,9 @@ var viewModel = function() {
 						self.listView.push(list[i]);
 					}
 				} else {
+					console.log("I am Here");
 					self.listView.removeAll();
-					self.showErrorIfExists = "No result found";
+					self.showErrorIfExists("No result found");
 				}
 			} else {
 				console.log('query is empty');
