@@ -1,3 +1,4 @@
+//protected. modified only when adding or permanently deleting data
 var allLocations = [
 	{
 		_name: "2015 Alberta Business Fair",
@@ -31,6 +32,7 @@ var allLocations = [
 	}
 ];
 
+//
 var filteredLocations2 = [
 	{
 		_name: "2015 Alberta Business Fair",
@@ -89,66 +91,76 @@ var query = {
 	}
 }
 
-
 var viewModel = function() {
 	var self = this;
 	self.listView = ko.observableArray(filteredLocations2);
 	self.showErrorIfExists= ko.observable("");
-	self.filterListView = ko.computed({
-		read: function() {
-			return query.getValue();
-		},
-		write: function() {
-			if (!query.isEmpty()) {
-				var list = query.generateFilteredList();
-				if(list.length > 0){
-					self.listView.removeAll();
-					for (i = 0; i < list.length; i++) {
-						self.listView.push(list[i]);
-						console.log("list is updated");
-					}
-				} else {
-					self.listView.removeAll();
-					self.showErrorIfExists("No result found");
-				}
+	self.filterContent = function() {
+		if (!query.isEmpty()) {
+			var list = query.generateFilteredList();
+			if(list.length > 0){
+				self.updateListView(list);
 			} else {
-				console.log('query is empty');
 				self.listView.removeAll();
-				for (i = 0; i < allLocations.length; i++) {
-					self.listView.push(allLocations[i]);
-				}
+				self.showErrorIfExists("No result found");
 			}
+		} else {
+			console.log('query is empty');
+				viewModel.displayDefault();
 		}
-	});
+
+		markers.filter(initMap.map,initMap.infowindow);
+	};
+	self.displayDefault = function() {
+		self.listView.removeAll();
+		self.showErrorIfExists("");
+		for (i = 0; i < allLocations.length; i++) {
+			self.listView.push(allLocations[i]);
+		}
+	};
+
+	self.updateListView = function(FILTEREDDATA){
+		self.listView.removeAll();
+		self.showErrorIfExists("");
+		for (i = 0; i < FILTEREDDATA.length; i++) {
+			self.listView.push(FILTEREDDATA[i]);
+			console.log("list is updated");
+		}
+	};
 };
 
 ko.applyBindings(new viewModel);
 
 var initMap = function() {
 	//init
-	var map = new google.maps.Map(document.getElementById('map'),{zoom: 5,center: allLocations[0].latlng});
-	var infoWindow = new google.maps.InfoWindow({maxWidth: 250});
-	var markerLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	var addedMarkers = [];
+	this.map = new google.maps.Map(document.getElementById('map'),{zoom: 5,center: allLocations[0].latlng});
+	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
 
-	var filterButton = document.getElementById('search-submit');
+	markers.init(this.map,allLocations,this.infoWindow);
 
-	markers.show(map,allLocations,markerLabels,infoWindow,addedMarkers);
-
-	google.maps.event.addDomListener(filterButton,'click',function(){
-		markers.filter(map,markerLabels,infoWindow,addedMarkers);
-		console.log("finished updating markers");
-	});
+	// var filterButton = document.getElementById('search-submit');
+	// google.maps.event.addDomListener(filterButton,'click',function(){
+	// 	markers.filter(MAP,INFOWINDOW);
+	// 	console.log("finished updating markers");
+	// });
 
 };
 
 var markers = {
-	show: function(MAP,DATASET,LABELS,INFOWINDOW,ADDEDMARKERS){
+	init: function(MAP,DATASET,INFOWINDOW) {
+		this.markerLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		this.addedMarkers = [];
+
+		markers.show(MAP,DATASET,INFOWINDOW);
+
+	},
+
+	show: function(MAP,DATASET,INFOWINDOW){
 		DATASET.map(function(location,i){
 			var content = location.content;
 			var marker = new google.maps.Marker({
 				position: location.latlng,
-				label: LABELS[i % LABELS.length],
+				label: markers.markerLabels[i % markers.markerLabels.length],
 				map: MAP,
 				title: location._name
 			});
@@ -161,24 +173,22 @@ var markers = {
 				setupInfoWindow(MAP,marker,content,INFOWINDOW);
 			});
 
-			ADDEDMARKERS.push(marker);
+			markers.addedMarkers.push(marker);
 		});
-		return ADDEDMARKERS
 	},
 
-	removeAll: function(ADDEDMARKERS) {
-		ADDEDMARKERS.map(function(marker,i){
-			marker.setMap(null);
-		});
-
-		ADDEDMARKERS = [];
-		return ADDEDMARKERS;
+	removeAll: function() {
+		for(i=0; i< markers.addedMarkers.length; i++) {
+			markers.addedMarkers[i].setMap(null);
+		}
+		markers.addedMarkers.length = 0;
+		console.log(markers.addedMarkers);
 	},
 
-	filter: function(MAP,LABELS,INFOWINDOW,ADDEDMARKERS) {
-		markers.removeAll(ADDEDMARKERS);
-		console.log(JSON.stringify(filteredLocations2));
-		markers.show(MAP,filteredLocations2,LABELS,INFOWINDOW,ADDEDMARKERS);
+	filter: function(MAP,INFOWINDOW) {
+		markers.removeAll();
+		console.log(filteredLocations2);
+		markers.show(MAP,filteredLocations2,INFOWINDOW);
 	}
 };
 
