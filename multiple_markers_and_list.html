@@ -30,7 +30,7 @@
 		</select>
 	</section>
 	<section id="list">
-		<ul data-bind="foreach: listView">
+		<ul data-bind="foreach: locationsArray">
 			<li><button data-bind="text: _name, attr:{id: 'location-'+($index()+1)}"></button></li>
 		</ul>
 	</section>

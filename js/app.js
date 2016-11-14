@@ -93,38 +93,45 @@ var query = {
 
 var viewModel = function() {
 	var self = this;
-	self.listView = ko.observableArray(filteredLocations2);
+	self.locationsArray = ko.observableArray(filteredLocations2);
 	self.showErrorIfExists= ko.observable("");
 	self.filterContent = function() {
+		//filter list
 		if (!query.isEmpty()) {
 			var list = query.generateFilteredList();
 			if(list.length > 0){
-				self.updateListView(list);
+				self.updateData(list);
 			} else {
-				self.listView.removeAll();
+				self.locationsArray.removeAll();
 				self.showErrorIfExists("No result found");
 			}
 		} else {
 			console.log('query is empty');
-				viewModel.displayDefault();
+			self.displayDefault();
 		}
+		console.log("about to activate markers filter function in filterContent: " +JSON.stringify(list));
+		// markers.filter(initMap().map,list,initMap().infowindow);
 
-		markers.filter(initMap.map,initMap.infowindow);
+		console.log('filter function activated');
+		mapMarkers.removeAll();
+		mapMarkers.generate(initMap().map,initMap().infowindow);
+
+		console.log("activated filter function in filtercontent");
+
 	};
 	self.displayDefault = function() {
-		self.listView.removeAll();
+		self.locationsArray.removeAll();
 		self.showErrorIfExists("");
 		for (i = 0; i < allLocations.length; i++) {
-			self.listView.push(allLocations[i]);
+			self.locationsArray.push(allLocations[i]);
 		}
 	};
 
-	self.updateListView = function(FILTEREDDATA){
-		self.listView.removeAll();
+	self.updateData = function(FILTEREDDATA){
+		self.locationsArray.removeAll();
 		self.showErrorIfExists("");
 		for (i = 0; i < FILTEREDDATA.length; i++) {
-			self.listView.push(FILTEREDDATA[i]);
-			console.log("list is updated");
+			self.locationsArray.push(FILTEREDDATA[i]);
 		}
 	};
 };
@@ -136,7 +143,7 @@ var initMap = function() {
 	this.map = new google.maps.Map(document.getElementById('map'),{zoom: 5,center: allLocations[0].latlng});
 	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
 
-	markers.init(this.map,allLocations,this.infoWindow);
+	mapMarkers.init(this.map,allLocations,this.infoWindow);
 
 	// var filterButton = document.getElementById('search-submit');
 	// google.maps.event.addDomListener(filterButton,'click',function(){
@@ -146,25 +153,27 @@ var initMap = function() {
 
 };
 
-var markers = {
+var mapMarkers = {
 	init: function(MAP,DATASET,INFOWINDOW) {
 		this.markerLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		this.addedMarkers = [];
 
-		markers.show(MAP,DATASET,INFOWINDOW);
-
+		mapMarkers.generate(MAP,INFOWINDOW);
+		console.log("Init function of markers activated");
 	},
 
-	show: function(MAP,DATASET,INFOWINDOW){
-		DATASET.map(function(location,i){
+	generate: function(MAP,INFOWINDOW){
+		console.log("show function activated");
+		console.log("Dataset from show: "+JSON.stringify(filteredLocations2));
+		filteredLocations2.map(function(location,i){
 			var content = location.content;
 			var marker = new google.maps.Marker({
 				position: location.latlng,
-				label: markers.markerLabels[i % markers.markerLabels.length],
+				label: mapMarkers.markerLabels[i % mapMarkers.markerLabels.length],
 				map: MAP,
 				title: location._name
 			});
-
+			console.log("at addDomListener: " + 'location-'+(i+1));
 			google.maps.event.addDomListener(document.getElementById('location-'+(i+1)),'click',function(){
 				setupInfoWindow(MAP,marker,content,INFOWINDOW);
 			});
@@ -173,22 +182,25 @@ var markers = {
 				setupInfoWindow(MAP,marker,content,INFOWINDOW);
 			});
 
-			markers.addedMarkers.push(marker);
+			mapMarkers.addedMarkers.push(marker);
 		});
 	},
 
 	removeAll: function() {
-		for(i=0; i< markers.addedMarkers.length; i++) {
-			markers.addedMarkers[i].setMap(null);
-		}
-		markers.addedMarkers.length = 0;
-		console.log(markers.addedMarkers);
+		console.log("remove function activated");
+		mapMarkers.addedMarkers.map(function(location,i){
+			mapMarkers.addedMarkers[i].setMap(null);
+		});
+		mapMarkers.addedMarkers = [];
+		console.log("AddedMarkers from remove all: " + mapMarkers.addedMarkers);
 	},
 
 	filter: function(MAP,INFOWINDOW) {
-		markers.removeAll();
-		console.log(filteredLocations2);
-		markers.show(MAP,filteredLocations2,INFOWINDOW);
+		console.log('filter function activated');
+		mapMarkers.removeAll();
+		console.log("filteredLocation2 from filter fuction: " + JSON.stringify(filteredLocations2));
+		console.log("Added Markers from filter function" + JSON.stringify(mapMarkers.addedMarkers));
+		mapMarkers.generate(MAP,INFOWINDOW);
 	}
 };
 
