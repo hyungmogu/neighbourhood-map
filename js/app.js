@@ -1,5 +1,5 @@
 //protected. modified only when adding or permanently deleting data
-var allLocations = [
+var safeData = [
 	{
 		_name: "2015 Alberta Business Fair",
 		content: "hi",
@@ -33,7 +33,7 @@ var allLocations = [
 ];
 
 //
-var filteredLocations2 = [
+var modifiableData = [
 	{
 		_name: "2015 Alberta Business Fair",
 		content: "hi",
@@ -81,10 +81,10 @@ var query = {
 	generateFilteredList: function() {
 		var query= this.getValue();
 		var list = [];
-		for(i = 0; i < allLocations.length; i++) {
-			console.log(allLocations[i].keywords.indexOf(query));
-			if (allLocations[i].keywords.indexOf(query) != -1){
-				list.push(allLocations[i]);
+		for(i = 0; i < safeData.length; i++) {
+			//console.log(safeData[i].keywords.indexOf(query));
+			if (safeData[i].keywords.indexOf(query) != -1){
+				list.push(safeData[i]);
 			}
 		}
 		return list;
@@ -93,7 +93,7 @@ var query = {
 
 var viewModel = function() {
 	var self = this;
-	self.locationsArray = ko.observableArray(filteredLocations2);
+	self.locationsArray = ko.observableArray(modifiableData);
 	self.showErrorIfExists= ko.observable("");
 	self.filterContent = function() {
 		//filter list
@@ -106,24 +106,24 @@ var viewModel = function() {
 				self.showErrorIfExists("No result found");
 			}
 		} else {
-			console.log('query is empty');
+			//console.log('query is empty');
 			self.displayDefault();
 		}
-		console.log("about to activate markers filter function in filterContent: " +JSON.stringify(list));
-		// markers.filter(initMap().map,list,initMap().infowindow);
+		//console.log("about to activate markers filter function in filterContent: " +JSON.stringify(list));
+		markers.filter();
 
-		console.log('filter function activated');
-		mapMarkers.removeAll();
-		mapMarkers.generate(initMap().map,initMap().infowindow);
+		// console.log('filter function activated');
+		// mapMarkers.removeAll();
+		// mapMarkers.generate(initMap().map,initMap().infowindow);
 
-		console.log("activated filter function in filtercontent");
+		// console.log("activated filter function in filtercontent");
 
 	};
 	self.displayDefault = function() {
 		self.locationsArray.removeAll();
 		self.showErrorIfExists("");
-		for (i = 0; i < allLocations.length; i++) {
-			self.locationsArray.push(allLocations[i]);
+		for (i = 0; i < safeData.length; i++) {
+			self.locationsArray.push(safeData[i]);
 		}
 	};
 
@@ -140,10 +140,10 @@ ko.applyBindings(new viewModel);
 
 var initMap = function() {
 	//init
-	this.map = new google.maps.Map(document.getElementById('map'),{zoom: 5,center: allLocations[0].latlng});
+	this.map = new google.maps.Map(document.getElementById('map'),{zoom: 5,center: safeData[0].latlng});
 	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
 
-	mapMarkers.init(this.map,allLocations,this.infoWindow);
+	markers.init(this.map,safeData,this.infoWindow);
 
 	// var filterButton = document.getElementById('search-submit');
 	// google.maps.event.addDomListener(filterButton,'click',function(){
@@ -153,27 +153,27 @@ var initMap = function() {
 
 };
 
-var mapMarkers = {
+var markers = {
 	init: function(MAP,DATASET,INFOWINDOW) {
 		this.markerLabels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		this.addedMarkers = [];
 
-		mapMarkers.generate(MAP,INFOWINDOW);
-		console.log("Init function of markers activated");
+		markers.generate(MAP,INFOWINDOW);
+		//console.log("Init function of markers activated");
 	},
 
 	generate: function(MAP,INFOWINDOW){
-		console.log("show function activated");
-		console.log("Dataset from show: "+JSON.stringify(filteredLocations2));
-		filteredLocations2.map(function(location,i){
+		//console.log("show function activated");
+		//console.log("Dataset from show: "+JSON.stringify(modifiableData));
+		modifiableData.map(function(location,i){
 			var content = location.content;
 			var marker = new google.maps.Marker({
 				position: location.latlng,
-				label: mapMarkers.markerLabels[i % mapMarkers.markerLabels.length],
+				label: markers.markerLabels[i % markers.markerLabels.length],
 				map: MAP,
 				title: location._name
 			});
-			console.log("at addDomListener: " + 'location-'+(i+1));
+			//console.log("at addDomListener: " + 'location-'+(i+1));
 			google.maps.event.addDomListener(document.getElementById('location-'+(i+1)),'click',function(){
 				setupInfoWindow(MAP,marker,content,INFOWINDOW);
 			});
@@ -182,25 +182,25 @@ var mapMarkers = {
 				setupInfoWindow(MAP,marker,content,INFOWINDOW);
 			});
 
-			mapMarkers.addedMarkers.push(marker);
+			markers.addedMarkers.push(marker);
 		});
 	},
 
 	removeAll: function() {
-		console.log("remove function activated");
-		mapMarkers.addedMarkers.map(function(location,i){
-			mapMarkers.addedMarkers[i].setMap(null);
+		//console.log("remove function activated");
+		markers.addedMarkers.map(function(location,i){
+			markers.addedMarkers[i].setMap(null);
 		});
-		mapMarkers.addedMarkers = [];
-		console.log("AddedMarkers from remove all: " + mapMarkers.addedMarkers);
+		markers.addedMarkers = [];
+		//console.log("AddedMarkers from remove all: " + mapMarkers.addedMarkers);
 	},
 
-	filter: function(MAP,INFOWINDOW) {
-		console.log('filter function activated');
-		mapMarkers.removeAll();
-		console.log("filteredLocation2 from filter fuction: " + JSON.stringify(filteredLocations2));
-		console.log("Added Markers from filter function" + JSON.stringify(mapMarkers.addedMarkers));
-		mapMarkers.generate(MAP,INFOWINDOW);
+	filter: function() {
+		//console.log('filter function activated');
+		markers.removeAll();
+		//console.log("filteredLocation2 from filter fuction: " + JSON.stringify(modifiableData));
+		//console.log("Added Markers from filter function" + JSON.stringify(mapMarkers.addedMarkers));
+		markers.generate(initMap().map,initMap().infoWindow);
 	}
 };
 
