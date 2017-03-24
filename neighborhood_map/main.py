@@ -25,4 +25,9 @@ class Main(Handler):
 	def get(self):
 		self.render("index.html")
 
-app = webapp2.WSGIApplication([("/", Main)], debug=True)
+class Detail(Handler):
+
+    def get(self):
+        self.render("detail.html")
+
+app = webapp2.WSGIApplication([("/", Main), ("/detail", Detail)], debug=True)
