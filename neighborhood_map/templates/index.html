@@ -23,17 +23,17 @@
 					</div>
 				</form>
 			</div>
-			<div class="content" style="display: none;">
-				<ul class="events list">
+			<div class="content">
+				<ul class="events list" data-bind="foreach: events">
 					<li class="item event">
-						<h4 class="title">Title</h4>
-						<p class="location">527 Doorbell Avenue</p>
-						<p class="starting-time">7:00PM ~ 11:00PM</p>
+						<h4 class="title" data-bind="text:name"></h4>
+						<p class="location" data-bind="text:location"></p>
+						<p class="starting-time" data-bind="text:time"></p>
 					</li>
 				</ul>
 			</div>
 			<div class="content">
-				<div class="event description">
+				<div class="event description" style="display: none;">
 					<h2>Title of Event</h2>
 					<p>Hello world</p>
 					<p>7:00PM ~ 11:00PM</p>
@@ -64,47 +64,47 @@ var initMap = function() {
 </script>
 <script>
 
-var model = {
-	events: [],
-	load_events: function(){
+var Event = function(event) {
+	var self = this;
+	self.name = event["name"]["text"];
+	self.description = event["description"]["text"];
+	self.time = event["start"]["local"] + " ~ " + event["end"]["local"];
+	self.location = event["venue"]["address"]["address_1"] + ", " + event["venue"]["address"]["city"];
+	self.organizer_name = event["organizer"]["name"];
+	self.url = event["url"];
+};
+
+var Events = {
+	load: function(){
 		$.ajax({
 			url: "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
 			type: "GET",
 			success: function(result,status){
-				model.events = result["events"];
-				console.log("Successfully loaded events");
-				console.log(JSON.stringify(model.events));
+				Model.data = result["events"];
+				ko.applyBindings(new InfoWindowViewModel());
 			},
 			error: function(error) {
 				console.log("Error occured while loading events: " + error);
 			}
 		});
 	}
-
-}
-
-var event = function(event) {
-	var self = this;
-	self.name = event["name"]["text"];
-	self.description = event["description"]["text"];
-	self.starting_time = event["start"]["local"];
-	self.end_time = event["end"]["local"];
-	self.location = event["venue"];
-	self.organizer_name = event["organizer"]["name"];
-	self.url = event["url"];
-	self.img_url = event["logo"]["url"];
-
 };
 
-var viewModel = function() {
+var Model = {
+	data: []
+};
 
+
+var InfoWindowViewModel = function() {
+	var self = this;
+	console.log("Hello world!");
 	//////////////
 	//
 	// Data
 	//
 	//////////////
 
-	var events = ko.observableArray([]);
+	self.events = ko.observableArray([]);
 
 	///////////////
 	//
@@ -112,9 +112,13 @@ var viewModel = function() {
 	//
 	//////////////
 
+	// Display list of events
+	$.map(Model.data, function(event){
+		self.events.push(new Event(event));
+	});
+
 };
 
-model.load_events();
-ko.applyBindings(new viewModel());
+Events.load();
 </script>
 </html>
