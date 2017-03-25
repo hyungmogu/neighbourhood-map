@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Neighborhood Map</title>
+	<link rel="stylesheet" href="/static/style/style.css">
+	<link rel="stylesheet" href="/static/style/lib/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+	<main class="app">
+		<section class="map">
+			<div id="g-map"></div>
+		</section>
+		<section class="info-window">
+			<div class="header">
+				<form class="form">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search Event Here">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button">Search</button>
+						</span>
+					</div>
+				</form>
+			</div>
+			<div class="content" style="display: none;">
+				<ul class="events list">
+					<li class="item event">
+						<h4 class="title">Title</h4>
+						<p class="location">527 Doorbell Avenue</p>
+						<p class="starting-time">7:00PM ~ 11:00PM</p>
+					</li>
+				</ul>
+			</div>
+			<div class="content">
+				<div class="event description">
+					<h2>Title of Event</h2>
+					<p>Hello world</p>
+					<p>7:00PM ~ 11:00PM</p>
+					<h4>Description:</h4>
+					<p>Webinar Description \nWriting concisely is one of the fundamental skills central to any mobile user assistance. The minimal screen real estate can\u2019t support large amounts of text and graphics without extensive gesturing by the users. Using small font sizes just makes the information unreadable unless the user pinches and stretches the text.   Even outside of the mobile space, your ability to streamline your content improves the likelihood it will be effectively consumed by your target audience.   This session offers a number of examples and techniques for reducing the footprint of your prose while maintaining a quality message. The examples used are in the context of mobile UA but can be applied to any technical writing situation. \nAbout Joe Welinske Joe Welinske specializes in helping your software development effort through crafted communication. The best user experience features quality words and images in the user interface. The UX of a robust product is also enhanced through comprehensive user assistance. This includes Help, wizards, FAQs, videos and much more. For over twenty-five years, Joe has been providing training, contracting, and consulting services for the software industry. Joe recently published the book, Developing User Assistance for Mobile Apps. He also teaches courses for Bellevue College, the University of California, and the University of Washington. Joe is an Associate Fellow of STC.</p>
+					<a class="btn btn-success" href="#">Learn More</a>
+				</div>
+			</div>
+		</section>
+	</main>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjRtlz7LH0-t1hmmSE_yenGqcayD4Euo&callback=initMap"></script>
+<script src="/static/js/lib/knockout-3.4.2.js"></script>
+<script>
+var initMap = function() {
+	//init
+	this.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {"lat":49.226967,"lng":-122.948692}});
+	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
+
+	// var filterButton = document.getElementById('search-submit');
+	// google.maps.event.addDomListener(filterButton,'click',function(){
+	// 	markers.filter(MAP,INFOWINDOW);
+	// 	console.log("finished updating markers");
+	// });
+
+};
+</script>
+<script>
+
+var model = {
+	events: [],
+	load_events: function(){
+		$.ajax({
+			url: "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
+			type: "GET",
+			success: function(result,status){
+				model.events = result["events"];
+				console.log("Successfully loaded events");
+				console.log(JSON.stringify(model.events));
+			},
+			error: function(error) {
+				console.log("Error occured while loading events: " + error);
+			}
+		});
+	}
+
+}
+
+var event = function(event) {
+	var self = this;
+	self.name = event["name"]["text"];
+	self.description = event["description"]["text"];
+	self.starting_time = event["start"]["local"];
+	self.end_time = event["end"]["local"];
+	self.location = event["venue"];
+	self.organizer_name = event["organizer"]["name"];
+	self.url = event["url"];
+	self.img_url = event["logo"]["url"];
+
+};
+
+var viewModel = function() {
+
+	//////////////
+	//
+	// Data
+	//
+	//////////////
+
+	var events = ko.observableArray([]);
+
+	///////////////
+	//
+	// Operations (Controller)
+	//
+	//////////////
+
+};
+
+model.load_events();
+ko.applyBindings(new viewModel());
+</script>
+</html>
