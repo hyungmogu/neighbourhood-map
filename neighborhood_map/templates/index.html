@@ -24,24 +24,24 @@
 				</form>
 			</div>
 			<div class="content">
-				<ul class="events list" data-bind="foreach: events">
-					<li class="item event">
-						<h4 class="title" data-bind="text:name"></h4>
-						<p class="location" data-bind="text:location"></p>
-						<p class="starting-time" data-bind="text:time"></p>
-					</li>
-				</ul>
+				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: show_event_list}, visible: show_event_list"></ul>
+				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: show_event_description}, visible: show_event_description"></div>
 			</div>
-			<div class="content">
-				<div class="event description" style="display: none;">
-					<h2>Title of Event</h2>
-					<p>Hello world</p>
-					<p>7:00PM ~ 11:00PM</p>
-					<h4>Description:</h4>
-					<p>Webinar Description \nWriting concisely is one of the fundamental skills central to any mobile user assistance. The minimal screen real estate can\u2019t support large amounts of text and graphics without extensive gesturing by the users. Using small font sizes just makes the information unreadable unless the user pinches and stretches the text.   Even outside of the mobile space, your ability to streamline your content improves the likelihood it will be effectively consumed by your target audience.   This session offers a number of examples and techniques for reducing the footprint of your prose while maintaining a quality message. The examples used are in the context of mobile UA but can be applied to any technical writing situation. \nAbout Joe Welinske Joe Welinske specializes in helping your software development effort through crafted communication. The best user experience features quality words and images in the user interface. The UX of a robust product is also enhanced through comprehensive user assistance. This includes Help, wizards, FAQs, videos and much more. For over twenty-five years, Joe has been providing training, contracting, and consulting services for the software industry. Joe recently published the book, Developing User Assistance for Mobile Apps. He also teaches courses for Bellevue College, the University of California, and the University of Washington. Joe is an Associate Fellow of STC.</p>
-					<a class="btn btn-success" href="#">Learn More</a>
-				</div>
-			</div>
+			<script type="text/html" id="event-list">
+				<li class="item event" data-bind="click: function(event){$root.load_description(event)}">
+					<h4 class="title" data-bind="text:event.name"></h4>
+					<p class="location" data-bind="text:event.location"></p>
+					<p class="starting-time" data-bind="text:event.time"></p>
+				</li>
+			</script>
+			<script type="text/html" id="event-description">
+				<h2 class="title" data-bind="text:name"></h2>
+				<p class="organizer-name" data-bind="text:organizer_name"></p>
+				<p class="time" data-bind="text:time"></p>
+				<h4 class="sub-title">Description:</h4>
+				<p class="description" data-bind="text:description"></p>
+				<a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
+			</script>
 		</section>
 	</main>
 </body>
@@ -97,7 +97,6 @@ var Model = {
 
 var InfoWindowViewModel = function() {
 	var self = this;
-	console.log("Hello world!");
 	//////////////
 	//
 	// Data
@@ -105,6 +104,9 @@ var InfoWindowViewModel = function() {
 	//////////////
 
 	self.events = ko.observableArray([]);
+	self.event = ko.observable();
+	self.show_event_description = ko.observable(false);
+	self.show_event_list = ko.observable(true);
 
 	///////////////
 	//
@@ -112,11 +114,22 @@ var InfoWindowViewModel = function() {
 	//
 	//////////////
 
-	// Display list of events
-	$.map(Model.data, function(event){
-		self.events.push(new Event(event));
-	});
+	self.load_events = function() {
+		// Display list of events
+		$.map(Model.data, function(event){
+			self.events.push(new Event(event));
+			self.show_event_list(true);
+			self.show_event_description(false);
+		});
+	}
 
+	self.load_description = function(event_item) {
+		self.event(event_item);
+		self.show_event_list(false);
+		self.show_event_description(true);
+	};
+
+	self.load_events();
 };
 
 Events.load();
