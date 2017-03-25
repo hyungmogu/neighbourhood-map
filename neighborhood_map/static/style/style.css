@@ -39,6 +39,10 @@ ul {
 	border-bottom: 1px solid lightgray;
 }
 
+.item.event:hover {
+	background-color: #eee;
+} 
+
 /*.app {
 	display: flex;
 	flex-wrap:wrap;
