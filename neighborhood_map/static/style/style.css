@@ -159,6 +159,11 @@ ul {
 		padding: 20px 15px;
 	}
 
+	.info-window .content {
+		height: calc(100% - 75px);
+		overflow-y: scroll
+	}
+
 } 
 
 @media screen and (min-width: 992px) and (max-width: 1170px) {
@@ -181,6 +186,11 @@ ul {
 		padding: 20px 15px;
 	}
 
+	.info-window .content {
+		height: calc(100% - 75px);
+		overflow-y: scroll
+	}
+
 } 
 
 @media screen and (min-width: 1171px) {
@@ -201,6 +211,11 @@ ul {
 
 	.info-window .header {
 		padding: 20px 15px;
+	}
+
+	.info-window .content {
+		height: calc(100% - 75px);
+		overflow-y: scroll
 	}
 
 } 
