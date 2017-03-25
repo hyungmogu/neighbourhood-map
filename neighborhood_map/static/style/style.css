@@ -16,7 +16,7 @@ ul {
 
 .app > div {
 	height: inherit;
-} 
+}
 
 .map {
 	background-color: lightgray;
@@ -34,14 +34,18 @@ ul {
 	border-bottom: 1px solid lightgray;
 }
 
-.item.event {
-	padding: 5px 10px;
+.event.item {
+	padding: 5px 15px;
 	border-bottom: 1px solid lightgray;
 }
 
-.item.event:hover {
+.event.item:hover {
 	background-color: #eee;
-} 
+}
+
+.event.description {
+	padding: 5px 15px;
+}
 
 /*.app {
 	display: flex;
@@ -88,7 +92,7 @@ ul {
 		order: 0;
 		height: 220px;
 		margin-bottom: 1.2em;
-	} 
+	}
 
 	.info-window {
 		order: 1;
@@ -142,7 +146,7 @@ ul {
 		padding: 7px 15px 20px 15px
 	}
 
-} 
+}
 
 @media screen and (min-width: 769px) and (max-width: 991px) {
 
@@ -196,7 +200,7 @@ ul {
 		overflow-y: scroll
 	}
 
-} 
+}
 
 @media screen and (min-width: 1171px) {
 
@@ -223,4 +227,4 @@ ul {
 		overflow-y: scroll
 	}
 
-} 
+}
