@@ -14,6 +14,8 @@ A project for Javascript Design Pattern course. It's an app that provides intera
 
 ### 2. Setup Google Map API
 
+### 3. Setup Eventbrite API
+
 ## Usage 
 ### Viewing Demo
 1. Navigate to `<PROJECT_REPO>/neighborhood_map/`
