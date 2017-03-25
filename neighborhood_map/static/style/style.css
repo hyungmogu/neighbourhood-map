@@ -34,8 +34,9 @@ ul {
 	border-bottom: 1px solid lightgray;
 }
 
-.info-window .content {
-	padding: 5px 15px;
+.item.event {
+	padding: 5px 10px;
+	border-bottom: 1px solid lightgray;
 }
 
 /*.app {
