@@ -18,6 +18,12 @@ git clone https://github.com/hyungmogu/udacity-neighbourhood-map
 ```
 
 ### 2. Setup Google Map API
+1. Follow [this](https://developers.google.com/maps/documentation/javascript/get-api-key) instruction, and obtain a key
+2. Navigate to the folder containing `index.html`
+```
+cd <PROJECT REPO>/neighborhood-map/
+```
+3. Open index.html, and replace `<INSERT GOOGLE MAP API KEY HERE>` with the key from step 1
 
 ### 3. Setup Eventbrite API
 1. Follow [this](https://www.eventbrite.com/support/articles/en_US/How_To/how-to-locate-your-eventbrite-api-user-key?lg=en_US) instruction, and obtain a key
