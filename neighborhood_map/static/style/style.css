@@ -47,6 +47,10 @@ ul {
 	padding: 5px 15px;
 }
 
+.go-back {
+	cursor: pointer;
+} 
+
 /*.app {
 	display: flex;
 	flex-wrap:wrap;
