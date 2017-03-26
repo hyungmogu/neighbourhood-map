@@ -35,6 +35,9 @@
 				</li>
 			</script>
 			<script type="text/html" id="event-description">
+				<div class="go-back for-desktop">
+					<a data-bind="click: $root.go_back_to_event_list">Go back</a>
+				</div>			
 				<h2 class="title" data-bind="text:name"></h2>
 				<p class="organizer-name" data-bind="text:organizer_name"></p>
 				<p class="time" data-bind="text:time"></p>
@@ -128,6 +131,11 @@ var InfoWindowViewModel = function() {
 		self.show_event_list(false);
 		self.show_event_description(true);
 	};
+
+	self.go_back_to_event_list = function() {
+		self.show_event_list(true);
+		self.show_event_description(false);		
+	} 
 
 	self.load_events();
 };
