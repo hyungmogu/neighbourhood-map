@@ -77,7 +77,7 @@ var Event = function(event) {
 	self.url = event["url"];
 };
 
-var Events = {
+var App = {
 	load: function(){
 		$.ajax({
 			url: "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
@@ -117,7 +117,7 @@ var InfoWindowViewModel = function() {
 	//
 	//////////////
 
-	self.load_events = function() {
+	self.init = function() {
 		// Display list of events
 		$.map(Model.data, function(event){
 			self.events.push(new Event(event));
@@ -137,9 +137,9 @@ var InfoWindowViewModel = function() {
 		self.show_event_description(false);		
 	} 
 
-	self.load_events();
+	self.init();
 };
 
-Events.load();
+App.load();
 </script>
 </html>
