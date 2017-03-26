@@ -47,7 +47,7 @@ ul {
 	padding: 5px 15px;
 }
 
-.go-back {
+.go-back a{
 	cursor: pointer;
 } 
 
