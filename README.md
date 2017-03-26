@@ -11,6 +11,11 @@ A project for Javascript Design Pattern course. It's an app that provides intera
 
 ## Installation
 ### 1. Download Project Files
+1. Navigate to a directory of choice
+2. Download the repository
+```
+git clone https://github.com/hyungmogu/udacity-neighbourhood-map
+```
 
 ### 2. Setup Google Map API
 
@@ -31,4 +36,4 @@ dev_appserver.py app.yaml
 ``` 
 
 ### Closing Server
-1. Press `Ctrl` + `c` in window where local server is running
+1. Press `Ctrl` + `c` in window where the local server is running
