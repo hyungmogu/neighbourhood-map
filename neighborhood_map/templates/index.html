@@ -14,11 +14,11 @@
 		</section>
 		<section class="info-window">
 			<div class="header">
-				<form class="form">
+				<form class="form" data-bind="submit: search_events">
 					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search Event Here">
+						<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:search_keywords">
 						<span class="input-group-btn">
-							<button class="btn btn-default" type="button">Search</button>
+							<button class="btn btn-default" type="submit">Search</button>
 						</span>
 					</div>
 				</form>
@@ -90,6 +90,20 @@ var App = {
 				console.log("Error occured while loading events: " + error);
 			}
 		});
+	},
+	search: function(keyword, callback) {
+		$.ajax({
+			url: "https://www.eventbriteapi.com/v3/events/search/?q=" + keyword + "&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
+			type: "GET",
+			success: function(result, status){=
+				Model.data = result["events"];
+				callback(result,status);
+			},
+			error: function(error) {
+				console.log("Error occured while searching events: " + error);
+				callback(error,)
+			}
+		});
 	}
 };
 
@@ -108,6 +122,7 @@ var InfoWindowViewModel = function() {
 
 	self.events = ko.observableArray([]);
 	self.event = ko.observable();
+	self.search_keywords = ko.observable();
 	self.show_event_description = ko.observable(false);
 	self.show_event_list = ko.observable(true);
 
@@ -124,6 +139,18 @@ var InfoWindowViewModel = function() {
 			self.show_event_list(true);
 			self.show_event_description(false);
 		});
+	};
+
+	self.search_events = function() {
+		var sanitized_keywords = encodeURIComponent(self.search_keywords()).replace(/%20/g, "+");
+		App.search(sanitized_keywords, function(result, status){
+			// Refresh array
+			self.events([]);
+			$.map(Model.data, function(event_item){
+				self.events.push(new Event(event_item));
+			});
+			self.go_back_to_event_list();
+		});
 	}
 
 	self.load_description = function(event_item) {
@@ -134,8 +161,8 @@ var InfoWindowViewModel = function() {
 
 	self.go_back_to_event_list = function() {
 		self.show_event_list(true);
-		self.show_event_description(false);		
-	} 
+		self.show_event_description(false);
+	};
 
 	self.init();
 };
