@@ -14,9 +14,9 @@
 		</section>
 		<section class="info-window">
 			<div class="header">
-				<form class="form" data-bind="submit: search_events">
+				<form class="form" data-bind="submit: searchEvents">
 					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:search_keywords">
+						<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:searchKeywords">
 						<span class="input-group-btn">
 							<button class="btn btn-default" type="submit">Search</button>
 						</span>
@@ -25,17 +25,17 @@
 			</div>
 			<div class="content">
 
-				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: show_event_list}, visible: show_event_list"></ul>
+				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: showEventList}, visible: showEventList"></ul>
 
-				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: show_event_description}, visible: show_event_description"></div>
-				<div class="error" data-bind="visible: show_error_screen">
-					<div class="not-found" data-bind="template: {name: 'error-not-found', if: show_not_found_error}"></div>
-					<div class="timeout" data-bind="template: {name: 'error-timeout', if: show_timeout_error}"></div>
-					<div class="default" data-bind="template: {name: 'error-default', if: show_default_error}"></div>
+				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: showEventDescription}, visible: showEventDescription"></div>
+				<div class="error" data-bind="visible: showErrorScreen">
+					<div class="not-found" data-bind="template: {name: 'error-not-found', if: showNotFoundError}"></div>
+					<div class="timeout" data-bind="template: {name: 'error-timeout', if: showTimeoutError}"></div>
+					<div class="default" data-bind="template: {name: 'error-default', if: showDefaultError}"></div>
 				</div>
 			</div>
 			<script type="text/html" id="event-list">
-				<li class="item event" data-bind="click: function(event){$root.load_description(event)}">
+				<li class="item event" data-bind="click: function(event){$root.loadDescription(event)}">
 					<h4 class="title" data-bind="text:event.name"></h4>
 					<p class="location" data-bind="text:event.location"></p>
 					<p class="starting-time" data-bind="text:event.time"></p>
@@ -43,10 +43,10 @@
 			</script>
 			<script type="text/html" id="event-description">
 				<div class="go-back for-desktop">
-					<a data-bind="click: $root.go_back_to_event_list">Go back</a>
+					<a data-bind="click: $root.goBackToEventList">Go back</a>
 				</div>
 				<h2 class="title" data-bind="text:name"></h2>
-				<p class="organizer-name" data-bind="text:organizer_name"></p>
+				<p class="organizer-name" data-bind="text:organizerName"></p>
 				<p class="time" data-bind="text:time"></p>
 				<h4 class="sub-title">Description:</h4>
 				<p class="description" data-bind="text:description"></p>
@@ -65,7 +65,7 @@
 	</main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjRtlz7LH0-t1hmmSE_yenGqcayD4Euo&callback=initMap"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjRtlz7LH0-t1hmmSE_yenGqcayD4Euo&callback=InitMap"></script>
 <script src="/static/js/lib/knockout-3.4.2.js"></script>
 <script src="/static/js/app.js"></script>
 </html>
