@@ -24,7 +24,9 @@
 				</form>
 			</div>
 			<div class="content">
+
 				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: show_event_list}, visible: show_event_list"></ul>
+
 				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: show_event_description}, visible: show_event_description"></div>
 				<div class="error" data-bind="visible: show_error_screen">
 					<div class="not-found" data-bind="template: {name: 'error-not-found', if: show_not_found_error}"></div>
@@ -42,7 +44,7 @@
 			<script type="text/html" id="event-description">
 				<div class="go-back for-desktop">
 					<a data-bind="click: $root.go_back_to_event_list">Go back</a>
-				</div>			
+				</div>
 				<h2 class="title" data-bind="text:name"></h2>
 				<p class="organizer-name" data-bind="text:organizer_name"></p>
 				<p class="time" data-bind="text:time"></p>
