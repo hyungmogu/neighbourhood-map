@@ -3,12 +3,6 @@ var initMap = function() {
 	this.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {"lat":49.226967,"lng":-122.948692}});
 	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
 
-	// var filterButton = document.getElementById('search-submit');
-	// google.maps.event.addDomListener(filterButton,'click',function(){
-	// 	markers.filter(MAP,INFOWINDOW);
-	// 	console.log("finished updating markers");
-	// });
-
 };
 
 var Event = function(event) {
