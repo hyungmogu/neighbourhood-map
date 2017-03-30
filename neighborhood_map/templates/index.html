@@ -14,11 +14,11 @@
 		</section>
 		<section class="info-window">
 			<div class="header">
-				<form class="form">
+				<form class="form" data-bind="submit: search_events">
 					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search Event Here">
+						<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:search_keywords">
 						<span class="input-group-btn">
-							<button class="btn btn-default" type="button">Search</button>
+							<button class="btn btn-default" type="submit">Search</button>
 						</span>
 					</div>
 				</form>
@@ -26,6 +26,11 @@
 			<div class="content">
 				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: show_event_list}, visible: show_event_list"></ul>
 				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: show_event_description}, visible: show_event_description"></div>
+				<div class="error" data-bind="visible: show_error_screen">
+					<div class="not-found" data-bind="template: {name: 'error-not-found', if: show_not_found_error}"></div>
+					<div class="timeout" data-bind="template: {name: 'error-timeout', if: show_timeout_error}"></div>
+					<div class="default" data-bind="template: {name: 'error-default', if: show_default_error}"></div>
+				</div>
 			</div>
 			<script type="text/html" id="event-list">
 				<li class="item event" data-bind="click: function(event){$root.load_description(event)}">
@@ -44,6 +49,15 @@
 				<h4 class="sub-title">Description:</h4>
 				<p class="description" data-bind="text:description"></p>
 				<a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
+			</script>
+			<script type="text/html" id="error-not-found">
+				<p>Sorry. Search result returned empty.</p>
+			</script>
+			<script type="text/html" id="error-timeout">
+				<p>Sorry. Search session timed out.</p>
+			</script>
+			<script type="text/html" id="error-default">
+				<p>Sorry. Error occured while retrieving data.</p>
 			</script>
 		</section>
 	</main>
@@ -90,6 +104,21 @@ var App = {
 				console.log("Error occured while loading events: " + error);
 			}
 		});
+	},
+	search: function(keyword, callback) {
+		$.ajax({
+			url: "https://www.eventbriteapi.com/v3/events/search/?q=" + keyword + "&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
+			type: "GET",
+			timeout: 5000,
+			success: function(result, status){
+				Model.data = result["events"];
+				callback(result, status);
+			},
+			error: function(xhr, status, error) {
+				console.log("Error occured while searching events: " + error);
+				callback(error, status);
+			}
+		});
 	}
 };
 
@@ -108,8 +137,14 @@ var InfoWindowViewModel = function() {
 
 	self.events = ko.observableArray([]);
 	self.event = ko.observable();
+	self.search_keywords = ko.observable();
+
 	self.show_event_description = ko.observable(false);
 	self.show_event_list = ko.observable(true);
+	self.show_error_screen = ko.observable(false);
+	self.show_default_error = ko.observable(false);
+	self.show_timeout_error = ko.observable(false);
+	self.show_not_found_error = ko.observable(false);
 
 	///////////////
 	//
@@ -124,7 +159,36 @@ var InfoWindowViewModel = function() {
 			self.show_event_list(true);
 			self.show_event_description(false);
 		});
-	}
+	};
+
+	self.search_events = function() {
+		var sanitized_keywords = encodeURIComponent(self.search_keywords()).replace(/%20/g, "+");
+		App.search(sanitized_keywords, function(result, status){
+
+			if (status == "error") {
+				self.display_error("default");
+				return;
+			};
+			if (status == "timeout") {
+				self.display_error("timeout");
+				return;
+			};
+			if (result["pagination"]["object_count"] == 0){
+				self.display_error("not_found");
+				return;
+			};
+
+			// Refresh the observable array
+			self.events([]);
+
+			// Update the event list
+			$.map(Model.data, function(event_item){
+				self.events.push(new Event(event_item));
+			});
+
+			self.go_back_to_event_list();
+		});
+	};
 
 	self.load_description = function(event_item) {
 		self.event(event_item);
@@ -134,8 +198,32 @@ var InfoWindowViewModel = function() {
 
 	self.go_back_to_event_list = function() {
 		self.show_event_list(true);
-		self.show_event_description(false);		
-	} 
+		self.show_event_description(false);
+		self.show_error_screen(false);
+	};
+
+	self.display_error = function(type) {
+
+		// Determine error display type
+		if (type == "default") {
+			self.show_default_error(true);
+			self.show_timeout_error(false);
+			self.show_not_found_error(false);
+		} else if (type == "timeout") {
+			self.show_default_error(false);
+			self.show_timeout_error(true);
+			self.show_not_found_error(false);
+		} else if (type == "not_found") {
+			self.show_default_error(false);
+			self.show_timeout_error(false);
+			self.show_not_found_error(true);
+		}
+
+		// Show error screen
+		self.show_error_screen(true);
+		self.show_event_list(false);
+		self.show_event_description(false);
+	}
 
 	self.init();
 };
