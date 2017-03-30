@@ -1,4 +1,4 @@
-var initMap = function() {
+var InitMap = function() {
 	//init
 	this.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {'lat':49.226967,'lng':-122.948692}});
 	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
@@ -11,7 +11,7 @@ var Event = function(event) {
 	self.description = event['description']['text'];
 	self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
 	self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
-	self.organizer_name = event['organizer']['name'];
+	self.organizerName = event['organizer']['name'];
 	self.url = event['url'];
 };
 
@@ -20,7 +20,7 @@ var App = {
 		$.ajax({
 			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
-			success: function(result,status){
+			success: function(result, status) {
 				Model.data = result['events'];
 				ko.applyBindings(new InfoWindowViewModel());
 			},
@@ -34,7 +34,7 @@ var App = {
 			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
 			timeout: 5000,
-			success: function(result, status){
+			success: function(result, status) {
 				Model.data = result['events'];
 				callback(result, status);
 			},
@@ -61,14 +61,14 @@ var InfoWindowViewModel = function() {
 
 	self.events = ko.observableArray([]);
 	self.event = ko.observable();
-	self.search_keywords = ko.observable();
+	self.searchKeywords = ko.observable();
 
-	self.show_event_description = ko.observable(false);
-	self.show_event_list = ko.observable(true);
-	self.show_error_screen = ko.observable(false);
-	self.show_default_error = ko.observable(false);
-	self.show_timeout_error = ko.observable(false);
-	self.show_not_found_error = ko.observable(false);
+	self.showEventDescription = ko.observable(false);
+	self.showEventList = ko.observable(true);
+	self.showErrorScreen = ko.observable(false);
+	self.showDefaultError = ko.observable(false);
+	self.showTimeoutError = ko.observable(false);
+	self.showNotFoundError = ko.observable(false);
 
 	///////////////
 	//
@@ -80,25 +80,25 @@ var InfoWindowViewModel = function() {
 		// Display list of events
 		$.map(Model.data, function(event){
 			self.events.push(new Event(event));
-			self.show_event_list(true);
-			self.show_event_description(false);
+			self.showEventList(true);
+			self.showEventDescription(false);
 		});
 	};
 
-	self.search_events = function() {
-		var sanitized_keywords = encodeURIComponent(self.search_keywords()).replace(/%20/g, '+');
-		App.search(sanitized_keywords, function(result, status){
+	self.searchEvents = function() {
+		var sanitizedKeywords = encodeURIComponent(self.searchKeywords()).replace(/%20/g, '+');
+		App.search(sanitizedKeywords, function(result, status) {
 
 			if (status == 'error') {
-				self.display_error('default');
+				self.displayError('default');
 				return;
 			};
 			if (status == 'timeout') {
-				self.display_error('timeout');
+				self.displayError('timeout');
 				return;
 			};
-			if (result['pagination']['object_count'] == 0){
-				self.display_error('not_found');
+			if (result['pagination']['object_count'] == 0) {
+				self.displayError('not_found');
 				return;
 			};
 
@@ -106,47 +106,47 @@ var InfoWindowViewModel = function() {
 			self.events([]);
 
 			// Update the event list
-			$.map(Model.data, function(event_item){
-				self.events.push(new Event(event_item));
+			$.map(Model.data, function(eventItem) {
+				self.events.push(new Event(eventItem));
 			});
 
-			self.go_back_to_event_list();
+			self.goBackToEventList();
 		});
 	};
 
-	self.load_description = function(event_item) {
-		self.event(event_item);
-		self.show_event_list(false);
-		self.show_event_description(true);
+	self.loadDescription = function(eventItem) {
+		self.event(eventItem);
+		self.showEventList(false);
+		self.showEventDescription(true);
 	};
 
-	self.go_back_to_event_list = function() {
-		self.show_event_list(true);
-		self.show_event_description(false);
-		self.show_error_screen(false);
+	self.goBackToEventList = function() {
+		self.showEventList(true);
+		self.showEventDescription(false);
+		self.showErrorScreen(false);
 	};
 
-	self.display_error = function(type) {
+	self.displayError = function(type) {
 
 		// Determine error display type
 		if (type == 'default') {
-			self.show_default_error(true);
-			self.show_timeout_error(false);
-			self.show_not_found_error(false);
+			self.showDefaultError(true);
+			self.showTimeoutError(false);
+			self.showNotFoundError(false);
 		} else if (type == 'timeout') {
-			self.show_default_error(false);
-			self.show_timeout_error(true);
-			self.show_not_found_error(false);
+			self.showDefaultError(false);
+			self.showTimeoutError(true);
+			self.showNotFoundError(false);
 		} else if (type == 'not_found') {
-			self.show_default_error(false);
-			self.show_timeout_error(false);
-			self.show_not_found_error(true);
+			self.showDefaultError(false);
+			self.showTimeoutError(false);
+			self.showNotFoundError(true);
 		}
 
 		// Show error screen
-		self.show_error_screen(true);
-		self.show_event_list(false);
-		self.show_event_description(false);
+		self.showErrorScreen(true);
+		self.showEventList(false);
+		self.showEventDescription(false);
 	}
 
 	self.init();
