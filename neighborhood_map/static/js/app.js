@@ -1,45 +1,45 @@
 var initMap = function() {
 	//init
-	this.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {"lat":49.226967,"lng":-122.948692}});
+	this.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {'lat':49.226967,'lng':-122.948692}});
 	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
 
 };
 
 var Event = function(event) {
 	var self = this;
-	self.name = event["name"]["text"];
-	self.description = event["description"]["text"];
-	self.time = event["start"]["local"] + " ~ " + event["end"]["local"];
-	self.location = event["venue"]["address"]["address_1"] + ", " + event["venue"]["address"]["city"];
-	self.organizer_name = event["organizer"]["name"];
-	self.url = event["url"];
+	self.name = event['name']['text'];
+	self.description = event['description']['text'];
+	self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
+	self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
+	self.organizer_name = event['organizer']['name'];
+	self.url = event['url'];
 };
 
 var App = {
 	load: function(){
 		$.ajax({
-			url: "https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
-			type: "GET",
+			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			type: 'GET',
 			success: function(result,status){
-				Model.data = result["events"];
+				Model.data = result['events'];
 				ko.applyBindings(new InfoWindowViewModel());
 			},
 			error: function(error) {
-				console.log("Error occured while loading events: " + error);
+				console.log('Error occured while loading events: ' + error);
 			}
 		});
 	},
 	search: function(keyword, callback) {
 		$.ajax({
-			url: "https://www.eventbriteapi.com/v3/events/search/?q=" + keyword + "&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG",
-			type: "GET",
+			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			type: 'GET',
 			timeout: 5000,
 			success: function(result, status){
-				Model.data = result["events"];
+				Model.data = result['events'];
 				callback(result, status);
 			},
 			error: function(xhr, status, error) {
-				console.log("Error occured while searching events: " + error);
+				console.log('Error occured while searching events: ' + error);
 				callback(error, status);
 			}
 		});
@@ -86,19 +86,19 @@ var InfoWindowViewModel = function() {
 	};
 
 	self.search_events = function() {
-		var sanitized_keywords = encodeURIComponent(self.search_keywords()).replace(/%20/g, "+");
+		var sanitized_keywords = encodeURIComponent(self.search_keywords()).replace(/%20/g, '+');
 		App.search(sanitized_keywords, function(result, status){
 
-			if (status == "error") {
-				self.display_error("default");
+			if (status == 'error') {
+				self.display_error('default');
 				return;
 			};
-			if (status == "timeout") {
-				self.display_error("timeout");
+			if (status == 'timeout') {
+				self.display_error('timeout');
 				return;
 			};
-			if (result["pagination"]["object_count"] == 0){
-				self.display_error("not_found");
+			if (result['pagination']['object_count'] == 0){
+				self.display_error('not_found');
 				return;
 			};
 
@@ -129,15 +129,15 @@ var InfoWindowViewModel = function() {
 	self.display_error = function(type) {
 
 		// Determine error display type
-		if (type == "default") {
+		if (type == 'default') {
 			self.show_default_error(true);
 			self.show_timeout_error(false);
 			self.show_not_found_error(false);
-		} else if (type == "timeout") {
+		} else if (type == 'timeout') {
 			self.show_default_error(false);
 			self.show_timeout_error(true);
 			self.show_not_found_error(false);
-		} else if (type == "not_found") {
+		} else if (type == 'not_found') {
 			self.show_default_error(false);
 			self.show_timeout_error(false);
 			self.show_not_found_error(true);
