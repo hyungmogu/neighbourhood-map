@@ -53,25 +53,7 @@ ul {
 
 .go-back a{
 	cursor: pointer;
-} 
-
-/*.app {
-	display: flex;
-	flex-wrap:wrap;
-	height: inherit;
 }
-
-@media screen and (min-width: 975px) {
-	.map {
-		width: 75%;
-		height: inherit;
-		background-color:lightgray;
-	}
-
-	.info-window {
-		width: 25%;
-	}
-}*/
 
 @media screen and (max-width: 405px) {
 	.map {
@@ -94,7 +76,7 @@ ul {
 }
 
 @media screen and (min-width: 406px) and (max-width: 520px) {
-	
+
 	.map {
 		width: 100%;
 		order: 0;
@@ -115,7 +97,7 @@ ul {
 }
 
 @media screen and (min-width: 521px) and (max-width: 650px) {
-	
+
 	.map {
 		width: 100%;
 		order: 0;
@@ -136,7 +118,7 @@ ul {
 }
 
 @media screen and (min-width: 651px) and (max-width: 768px) {
-	
+
 	.map {
 		width: 100%;
 		order: 0;
@@ -181,7 +163,7 @@ ul {
 		overflow-y: scroll
 	}
 
-} 
+}
 
 @media screen and (min-width: 992px) and (max-width: 1170px) {
 
