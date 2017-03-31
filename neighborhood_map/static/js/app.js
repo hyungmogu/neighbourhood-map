@@ -16,13 +16,13 @@ var Event = function(event) {
 };
 
 var App = {
-	load: function(){
+	load: function() {
 		$.ajax({
 			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
 			success: function(result, status) {
 				Model.data = result['events'];
-				ko.applyBindings(new InfoWindowViewModel());
+				ko.applyBindings(new InfoWindow());
 			},
 			error: function(error) {
 				console.log('Error occured while loading events: ' + error);
@@ -51,7 +51,7 @@ var Model = {
 };
 
 
-var InfoWindowViewModel = function() {
+var InfoWindow = function() {
 	var self = this;
 	//////////////
 	//
