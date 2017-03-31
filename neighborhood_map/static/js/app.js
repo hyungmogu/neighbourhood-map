@@ -1,7 +1,7 @@
-var InitMap = function() {
-	//init
-	this.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {'lat':49.226967,'lng':-122.948692}});
-	this.infoWindow = new google.maps.InfoWindow({maxWidth: 250});
+var Map = function() {
+	var self = this;
+
+	self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {'lat':49.226967,'lng':-122.948692}});
 
 };
 
