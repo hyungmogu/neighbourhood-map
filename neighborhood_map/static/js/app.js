@@ -5,6 +5,7 @@ var Event = function(event) {
 	self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
 	self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
 	self.organizerName = event['organizer']['name'];
+	self.latlng = {lat: parseFloat(event['venue']['latitude']), lng: parseFloat(event['venue']['longitude'])};
 	self.url = event['url'];
 };
 
@@ -25,8 +26,21 @@ var GMap = function(){
 	var self = this;
 
 	self.init = function() {
-		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 5,center: {'lat':49.226967,'lng':-122.948692}});
+		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 13,center: {'lat':49.226967,'lng':-122.948692}});
+
+		self.generateMarkers();
 	};
+
+	self.generateMarkers = function() {
+		$.map(Model.data,function(event){
+			console.log(JSON.stringify(event.latlng));
+			var marker = new google.maps.Marker({
+				position: event.latlng,
+				map: self.map
+			});
+		});
+	};
+
 };
 
 var App = {
