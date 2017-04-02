@@ -26,21 +26,53 @@ var GMap = function(){
 	var self = this;
 
 	self.init = function() {
-		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 13,center: {'lat':49.226967,'lng':-122.948692}});
+		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 12,center: {'lat':49.226967,'lng':-122.948692}});
 
 		self.generateMarkers();
 	};
 
 	self.generateMarkers = function() {
 		$.map(Model.data,function(event){
-			console.log(JSON.stringify(event.latlng));
 			var marker = new google.maps.Marker({
 				position: event.latlng,
 				map: self.map
+				// animation: google.maps.Animation.DROP
 			});
+
+			self.storeMarker(event, marker);
+
+			marker.addListener('click', function(){
+				App.showDetail(event);
+			});
+
 		});
 	};
 
+	self.removeAllMarkers = function() {
+		$.map(Model.data,function(event){
+			event.marker.setMap(null);
+		});
+	};
+
+	// self.resetMarkersAnimation = function() {
+	// 	$.map(Model.data, function(event){
+	// 		if (typeof event.marker != 'undefined') {
+	// 			event.marker.setAnimation(null);
+	// 		};
+	// 	});
+	// };
+
+	self.storeMarker = function(event, marker) {
+		event.marker = marker;
+	};
+
+	// self.makeMarkerBounce = function(event) {
+	// 	if (event.marker.getAnimation() !== null) {
+	// 	  event.marker.setAnimation(null);
+	// 	} else {
+	// 	  event.marker.setAnimation(google.maps.Animation.BOUNCE);
+	// 	}
+	// };
 };
 
 var App = {
@@ -49,6 +81,7 @@ var App = {
 
 		self.infoWindow = new InfoWindow();
 		self.gMap = new GMap();
+		self.userLocation = {lat: 0, lng: 0};
 
 		App._load();
 	},
@@ -56,7 +89,7 @@ var App = {
 		var self = this;
 		ko.applyBindings(self.infoWindow);
 		$.ajax({
-			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
 			timeout: 5000,
 			success: function(result, status) {
@@ -85,11 +118,30 @@ var App = {
 			}
 		});
 	},
+	showDetail: function(event) {
+		var self = this;
+
+		if (typeof event == 'undefined') {
+			self.infoWindow.displayError('default');
+			return;
+		}
+
+		// self.gMap.resetMarkersAnimation();
+		// self.gMap.makeMarkerBounce(event);
+
+		self.infoWindow.showDetail(event);
+	},
+	returnToMain: function() {
+		var self = this;
+		// self.gMap.resetMarkersAnimation();
+
+		self.infoWindow.showMain();
+	},
 	search: function(keyword, callback) {
 		var self = this;
 
 		$.ajax({
-			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&date_modified.keyword=this_week&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
 			timeout: 5000,
 			success: function(result, status) {
@@ -99,14 +151,21 @@ var App = {
 					return;
 				};
 
+				// self.gMap.removeAllMarkers();
+
 				Model.refreshData(result['events']);
+
+				// self.gMap.generateMarkers();
 
 				self.infoWindow.updateEvents();
 
-				self.infoWindow.goBackToEventList();
+				App.returnToMain();
+
 			},
 			error: function(xhr, status, error) {
 				console.log('Error occured while searching events: ' + error);
+
+				// self.gmap.resetMarkersAnimation();
 
 				if (status == 'error') {
 					self.infoWindow.displayError('default');
@@ -155,15 +214,25 @@ var InfoWindow = function() {
 		});
 	};
 
+	self.showDetail = function(event) {
+		self.event(event);
+		self.showEventList(false);
+		self.showEventDescription(true);
+	}
+
+	self.showMain = function() {
+		self.showEventList(true);
+		self.showEventDescription(false);
+		self.showErrorScreen(false);
+	};
+
 	self.searchEvents = function() {
 		var sanitizedKeywords = encodeURIComponent(self.searchKeywords()).replace(/%20/g, '+');
 		App.search(sanitizedKeywords);
 	};
 
-	self.loadDescription = function(eventItem) {
-		self.event(eventItem);
-		self.showEventList(false);
-		self.showEventDescription(true);
+	self.loadDescription = function(event) {
+		App.showDetail(event);
 	};
 
 	self.updateEvents = function() {
@@ -177,9 +246,7 @@ var InfoWindow = function() {
 	};
 
 	self.goBackToEventList = function() {
-		self.showEventList(true);
-		self.showEventDescription(false);
-		self.showErrorScreen(false);
+		App.returnToMain();
 	};
 
 	self.displayError = function(type) {
