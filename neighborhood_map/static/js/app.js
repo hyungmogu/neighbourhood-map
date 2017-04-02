@@ -151,11 +151,11 @@ var App = {
 					return;
 				};
 
-				// self.gMap.removeAllMarkers();
+				self.gMap.removeAllMarkers();
 
 				Model.refreshData(result['events']);
 
-				// self.gMap.generateMarkers();
+				self.gMap.generateMarkers();
 
 				self.infoWindow.updateEvents();
 
