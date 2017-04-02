@@ -1,7 +1,7 @@
 var Event = function(event) {
 	var self = this;
 	self.name = event['name']['text'];
-	self.description = event['description']['text'];
+	self.description = event['description']['html'];
 	self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
 	self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
 	self.organizerName = event['organizer']['name'];
