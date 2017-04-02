@@ -35,8 +35,8 @@ var GMap = function(){
 		$.map(Model.data,function(event){
 			var marker = new google.maps.Marker({
 				position: event.latlng,
-				map: self.map
-				// animation: google.maps.Animation.DROP
+				map: self.map,
+				animation: google.maps.Animation.DROP
 			});
 
 			self.storeMarker(event, marker);
@@ -54,25 +54,25 @@ var GMap = function(){
 		});
 	};
 
-	// self.resetMarkersAnimation = function() {
-	// 	$.map(Model.data, function(event){
-	// 		if (typeof event.marker != 'undefined') {
-	// 			event.marker.setAnimation(null);
-	// 		};
-	// 	});
-	// };
+	self.resetMarkersAnimation = function() {
+		$.map(Model.data, function(event){
+			if (typeof event.marker != 'undefined') {
+				event.marker.setAnimation(null);
+			};
+		});
+	};
 
 	self.storeMarker = function(event, marker) {
 		event.marker = marker;
 	};
 
-	// self.makeMarkerBounce = function(event) {
-	// 	if (event.marker.getAnimation() !== null) {
-	// 	  event.marker.setAnimation(null);
-	// 	} else {
-	// 	  event.marker.setAnimation(google.maps.Animation.BOUNCE);
-	// 	}
-	// };
+	self.makeMarkerBounce = function(event) {
+		if (event.marker.getAnimation() !== null) {
+		  event.marker.setAnimation(null);
+		} else {
+		  event.marker.setAnimation(google.maps.Animation.BOUNCE);
+		}
+	};
 };
 
 var App = {
@@ -126,14 +126,14 @@ var App = {
 			return;
 		}
 
-		// self.gMap.resetMarkersAnimation();
-		// self.gMap.makeMarkerBounce(event);
+		self.gMap.resetMarkersAnimation();
+		self.gMap.makeMarkerBounce(event);
 
 		self.infoWindow.showDetail(event);
 	},
 	returnToMain: function() {
 		var self = this;
-		// self.gMap.resetMarkersAnimation();
+		self.gMap.resetMarkersAnimation();
 
 		self.infoWindow.showMain();
 	},
@@ -165,7 +165,7 @@ var App = {
 			error: function(xhr, status, error) {
 				console.log('Error occured while searching events: ' + error);
 
-				// self.gmap.resetMarkersAnimation();
+				self.gmap.resetMarkersAnimation();
 
 				if (status == 'error') {
 					self.infoWindow.displayError('default');
