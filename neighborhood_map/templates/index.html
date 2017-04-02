@@ -42,15 +42,18 @@
 				</li>
 			</script>
 			<script type="text/html" id="event-description">
-				<div class="go-back for-desktop">
+				<div class="go-back">
 					<a data-bind="click: $root.goBackToEventList">Go back</a>
 				</div>
-				<h2 class="title" data-bind="text:name"></h2>
-				<p class="organizer-name" data-bind="text:organizerName"></p>
-				<p class="time" data-bind="text:time"></p>
-				<h4 class="sub-title">Description:</h4>
-				<div class="description" data-bind="html:description"></div>
-				<a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
+				<div class="hero">
+					<h3 class="title" data-bind="text:name"></h3>
+					<p class="organizer-name" data-bind="text:location"></p>
+					<p class="time" data-bind="text:time"></p>
+				</div>
+				<div class="texts" data-bind="html:description"></div>
+				<div class="options">
+					<a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
+				</div>
 			</script>
 			<script type="text/html" id="error-not-found">
 				<p>Sorry. Search result returned empty.</p>

@@ -53,6 +53,22 @@ ul {
 	padding: 5px 15px;
 }
 
+.event.description .hero {
+	margin: 2em 0 0 0;
+}
+
+.event.description .texts {
+	margin: 2em 0 0 0;
+}
+
+.event.description .options {
+	margin: 2em 0 0 0;
+}
+
+.event.description .options a {
+	width: 100%;
+}
+
 .go-back {
 	padding: 5px 0;
 }
