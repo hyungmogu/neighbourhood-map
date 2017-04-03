@@ -38,7 +38,7 @@
 				<li class="item event" data-bind="click: function(event){$root.loadDescription(event)}">
 					<h4 class="title" data-bind="text:event.name"></h4>
 					<p class="location" data-bind="text:event.location"></p>
-					<p class="starting-time" data-bind="text:event.time"></p>
+					<p class="starting-time" data-bind="html:event.time"></p>
 				</li>
 			</script>
 			<script type="text/html" id="event-description">
@@ -48,7 +48,7 @@
 				<div class="hero">
 					<h3 class="title" data-bind="text:name"></h3>
 					<p class="location" data-bind="text:location"></p>
-					<p class="time" data-bind="text:time"></p>
+					<p class="time" data-bind="html:time"></p>
 				</div>
 				<div class="texts" data-bind="html:description"></div>
 				<div class="options">

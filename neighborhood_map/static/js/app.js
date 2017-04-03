@@ -5,9 +5,29 @@ var Event = function(event) {
 		return address == null ? city : address + ', ' + city;
 	};
 
+	self.addTime = function(startingTime){
+		var currentDateTime = new Date();
+		var startingDateTime = new Date(startingTime);
+		var remainingDateTime = new Date(currentDateTime.getTime() - startingDateTime.getTime());
+
+		var remainingHours = remainingDateTime.getHours();
+		var remainingMinutes = remainingDateTime.getMinutes();
+
+		if (remainingHours > 4) {
+			return '<span class="text-success">Starts in ' + remainingHours + ' hours ' + remainingMinutes + ' minutes' + '<\/span>';
+		} else if (remainingHours <= 4 && remainingHours > 2) {
+			return '<span class="text-warning">Starts in ' + remainingHours + ' hours ' + remainingMinutes + ' minutes' + '<\/span>';
+		} else if (remainingHours <= 2 && remainingHours > 0) {
+			return '<span class="text-danger">Starts in ' + remainingHours + ' hours ' + remainingMinutes + ' minutes' + '<\/span>';
+		} else {
+			return '<span class="text-muted">Already Started</span>';
+		}
+	};
+
 	self.name = event['name']['text'];
 	self.description = event['description']['html'];
-	self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
+	// self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
+	self.time = self.addTime(event['start']['local']);
 	self.location = self.addLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);
 	// self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
 	self.organizerName = event['organizer']['name'];
