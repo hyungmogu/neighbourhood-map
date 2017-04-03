@@ -1,9 +1,15 @@
 var Event = function(event) {
 	var self = this;
+
+	self.addLocation = function(address, city) {
+		return address == null ? city : address + ', ' + city;
+	};
+
 	self.name = event['name']['text'];
 	self.description = event['description']['html'];
 	self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
-	self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
+	self.location = self.addLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);
+	// self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
 	self.organizerName = event['organizer']['name'];
 	self.latlng = {lat: parseFloat(event['venue']['latitude']), lng: parseFloat(event['venue']['longitude'])};
 	self.url = event['url'];
