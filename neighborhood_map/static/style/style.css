@@ -69,6 +69,10 @@ ul {
 	width: 100%;
 }
 
+.event.description img {
+	width: 100%;
+}
+
 .go-back {
 	padding: 5px 0;
 }
