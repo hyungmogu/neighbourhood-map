@@ -31,10 +31,8 @@ var Event = function(event) {
 
 	self.name = event['name']['text'];
 	self.description = event['description']['html'];
-	// self.time = event['start']['local'] + ' ~ ' + event['end']['local'];
 	self.time = self.addTime(event['start']['utc']);
 	self.location = self.addLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);
-	// self.location = event['venue']['address']['address_1'] + ', ' + event['venue']['address']['city'];
 	self.organizerName = event['organizer']['name'];
 	self.latlng = {lat: parseFloat(event['venue']['latitude']), lng: parseFloat(event['venue']['longitude'])};
 	self.url = event['url'];
@@ -42,6 +40,7 @@ var Event = function(event) {
 
 var Model = {
 	data: [],
+	userLocation: {lat: 0, lng: 0},
 	addData: function(data) {
 		$.map(data, function(item){
 			Model.data.push(new Event(item));
@@ -57,7 +56,7 @@ var GMap = function(){
 	var self = this;
 
 	self.init = function() {
-		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 12,center: {'lat':49.226967,'lng':-122.948692}});
+		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 10,center: Model.userLocation});
 
 		self.generateMarkers();
 	};
@@ -112,15 +111,16 @@ var App = {
 
 		self.infoWindow = new InfoWindow();
 		self.gMap = new GMap();
-		self.userLocation = {lat: 0, lng: 0};
 
-		App._load();
+		ko.applyBindings(self.infoWindow);
+		App._getUserLocation(function(){
+			App._load();
+		});
 	},
 	_load: function(callback) {
 		var self = this;
-		ko.applyBindings(self.infoWindow);
 		$.ajax({
-			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
 			timeout: 5000,
 			success: function(result, status) {
@@ -149,6 +149,24 @@ var App = {
 			}
 		});
 	},
+	_getUserLocation: function(callback) {
+		var self = this;
+
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+
+				Model.userLocation["lat"] = position.coords.latitude;
+				Model.userLocation["lng"] = position.coords.longitude;
+
+				callback();
+			}, function(){
+
+				self.infoWindow.displayError("default");
+			});
+		} else {
+			self.infoWindow.displayError("default");
+		};
+	},
 	showDetail: function(event) {
 		var self = this;
 
@@ -164,6 +182,7 @@ var App = {
 	},
 	returnToMain: function() {
 		var self = this;
+
 		self.gMap.resetMarkersAnimation();
 
 		self.infoWindow.showMain();
@@ -172,7 +191,7 @@ var App = {
 		var self = this;
 
 		$.ajax({
-			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=49.226967&location.longitude=-122.948692&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
 			timeout: 5000,
 			success: function(result, status) {
