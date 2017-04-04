@@ -81,6 +81,15 @@ ul {
 	cursor: pointer;
 }
 
+.error {
+	padding: 2em 1em;
+	text-align:center;
+}
+
+.error-icon {
+	font-size: 10em !important;
+}
+
 @media screen and (max-width: 405px) {
 
 	/*G MAP*/
@@ -102,6 +111,10 @@ ul {
 
 	.info-window .header {
 		padding: 7px 15px 20px 15px
+	}
+
+	.error-icon {
+		font-size: 8em !important;
 	}
 
 }
@@ -129,6 +142,10 @@ ul {
 		padding: 7px 15px 20px 15px
 	}
 
+	.error-icon {
+		font-size: 8em !important;
+	}
+
 }
 
 @media screen and (min-width: 521px) and (max-width: 650px) {
@@ -154,6 +171,10 @@ ul {
 		padding: 7px 15px 20px 15px
 	}
 
+	.error-icon {
+		font-size: 8em !important;
+	}
+
 }
 
 @media screen and (min-width: 651px) and (max-width: 768px) {
@@ -177,6 +198,10 @@ ul {
 
 	.info-window .header {
 		padding: 7px 15px 20px 15px
+	}
+
+	.error-icon {
+		font-size: 8em !important;
 	}
 
 }
@@ -210,6 +235,10 @@ ul {
 		overflow-y: scroll
 	}
 
+	.error-icon {
+		font-size: 10em !important;
+	}
+
 }
 
 @media screen and (min-width: 992px) and (max-width: 1170px) {
@@ -241,6 +270,10 @@ ul {
 		overflow-y: scroll
 	}
 
+	.error-icon {
+		font-size: 10em !important;
+	}
+
 }
 
 @media screen and (min-width: 1171px) {
@@ -270,6 +303,10 @@ ul {
 	.info-window .content {
 		height: calc(100% - 75px);
 		overflow-y: scroll
+	}
+
+	.error-icon {
+		font-size: 10em !important;
 	}
 
 }

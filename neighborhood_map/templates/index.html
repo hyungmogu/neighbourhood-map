@@ -6,6 +6,7 @@
 	<title>Neighborhood Map</title>
 	<link rel="stylesheet" href="/static/style/style.css">
 	<link rel="stylesheet" href="/static/style/lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/style/lib/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
 	<main class="app">
@@ -56,12 +57,18 @@
 				</div>
 			</script>
 			<script type="text/html" id="error-not-found">
+				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
+				<h3>Empty Result (204)</h3>
 				<p>Sorry. Search result returned empty.</p>
 			</script>
 			<script type="text/html" id="error-timeout">
-				<p>Sorry. Search session timed out.</p>
+				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
+				<h3>Timeout (408)</h3>
+				<p>Sorry. App took too long to retrieve data.</p>
 			</script>
 			<script type="text/html" id="error-default">
+				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
+				<h3>Not Found (404)</h3>
 				<p>Sorry. Error occured while retrieving data.</p>
 			</script>
 		</section>

@@ -249,6 +249,7 @@ var InfoWindow = function() {
 		self.event(event);
 		self.showEventList(false);
 		self.showEventDescription(true);
+		self.showErrorScreen(false);
 	}
 
 	self.showMain = function() {
