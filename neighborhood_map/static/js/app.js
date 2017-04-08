@@ -1,11 +1,11 @@
 var Event = function(event) {
 	var self = this;
 
-	self.addLocation = function(address, city) {
+	self._getLocation = function(address, city) {
 		return address == null ? city : address + ', ' + city;
 	};
 
-	self.addTime = function(startingTime){
+	self._getTime = function(startingTime){
 		var MINUTE_IN_MILLISECONDS = 1000 * 60;
 		var HOUR_IN_MILLISECONDS =  1000 * 60 * 60;
 
@@ -29,26 +29,154 @@ var Event = function(event) {
 		}
 	};
 
+	self._generateKeywords = function(event) {
+		var location = self._getLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);
+		var harvestTargets = [event['description']['text'],event['name']['text'],location];
+		var output = {};
+
+		for (i = 0; i < harvestTargets.length; i++) {
+
+			if (harvestTargets[i] == null) {
+				continue;
+			};
+
+			$.map(harvestTargets[i].toLowerCase().split(' '), function(keyword, j){
+				if (typeof output['keyword'] == 'undefined') {
+					output[keyword] = 1;
+				} else if (output[keyword] > 1) {
+					output[keyword] += 1;
+				};
+			});
+
+		};
+
+		return output;
+	}
+
 	self.name = event['name']['text'];
 	self.description = event['description']['html'];
-	self.time = self.addTime(event['start']['utc']);
-	self.location = self.addLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);
-	self.organizerName = event['organizer']['name'];
+	self.time = self._getTime(event['start']['utc']);
+	self.location = self._getLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);;
 	self.latlng = {lat: parseFloat(event['venue']['latitude']), lng: parseFloat(event['venue']['longitude'])};
+	self.organizerName = event['organizer']['name'];
+	self.keywords = self._generateKeywords(event);
 	self.url = event['url'];
 };
 
+var Search = function(keywords, events) {
+
+	var self = this;
+	console.log(keywords);
+	self.numOfEvents = events.length;
+	self.searchKeywords = typeof keywords == 'undefined' || keywords == '' ? null: keywords.toLowerCase().split(" ");
+
+	self.returnResults = function() {
+
+		console.log(self.searchKeywords);
+		// Return everything if no keywords are entered
+		if (self.searchKeywords == null) {
+			return events;
+		}
+
+		var relevancies = self._calculateRelevancies(events);
+		var sortedEvents = self._sortEvents(relevancies, events);
+		var filteredEvents = self._removeIrrevalentEvents(relevancies, sortedEvents);
+		return filteredEvents;
+	};
+
+	self._calculateRelevancies = function(events) {
+		// Note: Relevancy reflects the amount of matching between
+		// an event and search keywords.
+		var relevancy;
+		var output = [];
+
+		$.map(events, function(event, i){
+
+			var matchingKeywordsCnt = 0;
+
+			$.map(self.searchKeywords, function(keyword, i){
+				if (typeof event.keywords[keyword] != 'undefined'){
+					matchingKeywordsCnt += 1;
+				};
+			});
+
+			relevancy = matchingKeywordsCnt / self.searchKeywords.length;
+			output.push(relevancy);
+		});
+
+		return output;
+	};
+
+	self._sortEvents = function(relevancies, events) {
+		var output = events;
+
+		// Note: Insertion algorithm is used.
+		var i = 1;
+		while (i < self.numOfEvents) {
+
+			var j = i;
+			while  (j > 0) {
+
+				if (relevancies[j] > relevancies[j-1]) {
+					var tmp1 = relevancies[j-1];
+					relevancies[j-1] = relevancies[j];
+					relevancies[j] = tmp1;
+
+					// Organize events using relevancies as a reference
+					var tmp2 = output[j-1];
+					output[j-1] = output[j];
+					output[j] = tmp2;
+				};
+
+				j -= 1;
+
+			};
+
+			i += 1;
+
+		};
+		return output;
+
+	};
+
+	self._removeIrrevalentEvents = function(relevancies, sortedEvents) {
+		var output = sortedEvents;
+		var threshold = 0.5;
+
+		// Remove events with relevancy below the threshold
+		for (i = 0; i < relevancies.length; i++) {
+			if (relevancies[i] <= threshold) {
+				output = output.splice(0, i);
+				break;
+			};
+		};
+		return output;
+	};
+
+};
+
 var Model = {
+	backUpData: [],
 	data: [],
 	userLocation: {lat: 0, lng: 0},
-	addData: function(data) {
+	get: function(target) {
+		if (target == 'backUpData' || target == 'data') {
+			return Model[target].slice();
+		};
+	},
+	addData: function(target, data) {
 		$.map(data, function(item){
-			Model.data.push(new Event(item));
+			Model[target].push(item);
 		});
 	},
-	refreshData: function(data) {
-		Model.data = [];
-		Model.addData(data);
+	deleteAll: function(target) {
+		if (target == 'backUpData' || target == 'data') {
+			Model[target] = [];
+		};
+
+		if (target == 'userLocation') {
+			Model[target] = {lat:0, lng: 0};
+		};
 	}
 };
 
@@ -119,6 +247,8 @@ var App = {
 	},
 	_load: function(callback) {
 		var self = this;
+		var events = [];
+
 		$.ajax({
 			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
 			type: 'GET',
@@ -130,7 +260,12 @@ var App = {
 					return;
 				};
 
-				Model.addData(result['events']);
+				$.map(result['events'], function(eventData, i){
+					events.push(new Event(eventData));
+				});
+
+				Model.addData('backUpData', events);
+				Model.addData('data', events);
 
 				self.gMap.init();
 				self.infoWindow.init();
@@ -154,13 +289,11 @@ var App = {
 
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-
 				Model.userLocation["lat"] = position.coords.latitude;
 				Model.userLocation["lng"] = position.coords.longitude;
 
 				callback();
 			}, function(){
-
 				self.infoWindow.displayError("default");
 			});
 		} else {
@@ -187,8 +320,38 @@ var App = {
 
 		self.infoWindow.showMain();
 	},
-	search: function(keyword, callback) {
+	search: function(searchKeywords) {
 		var self = this;
+		var events = Model.get('backUpData');
+
+		self.gMap.removeAllMarkers();
+
+		if (events.length == 0) {
+			self.infoWindow.displayError('not_found');
+			return;
+		};
+
+		var search = new Search(searchKeywords, Model.get('backUpData'));
+		var searchResults = search.returnResults();
+
+		if (searchResults.length == 0) {
+			self.infoWindow.displayError('not_found');
+			return;
+		};
+
+		Model.deleteAll('data');
+		Model.addData('data', searchResults);
+
+		self.gMap.generateMarkers();
+
+		self.infoWindow.updateEvents();
+
+		App.returnToMain();
+
+	},
+	refresh: function(keyword) {
+		var self = this;
+		var events = [];
 
 		$.ajax({
 			url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
@@ -201,9 +364,16 @@ var App = {
 					return;
 				};
 
+				$.map(result['events'], function(eventData, i){
+					events.push(new Event(eventData));
+				});
+
 				self.gMap.removeAllMarkers();
 
-				Model.refreshData(result['events']);
+				Model.deleteAll('backUpData');
+				Model.deleteAll('data');
+				Model.add('backUpData', events);
+				Model.add('data', events);
 
 				self.gMap.generateMarkers();
 
@@ -278,8 +448,8 @@ var InfoWindow = function() {
 	};
 
 	self.searchEvents = function() {
-		var sanitizedKeywords = encodeURIComponent(self.searchKeywords()).replace(/%20/g, '+');
-		App.search(sanitizedKeywords);
+		// var sanitizedKeywords = encodeURIComponent(self.searchKeywords()).replace(/%20/g, '+');
+		App.search(self.searchKeywords());
 	};
 
 	self.loadDescription = function(event) {
