@@ -10,6 +10,19 @@ ul {
 	list-style-type: none;
 }
 
+/*- HEADER*/
+
+header {
+	margin: 0 !important;
+}
+
+.navbar-menu {
+	margin: 9px 9px;
+	float: right;
+}
+
+/*- MAIN*/
+
 .app {
 	display: flex;
 	flex-wrap: wrap;
@@ -20,7 +33,7 @@ ul {
 	height: inherit;
 }
 
-/*G MAP*/
+/*-- G MAP*/
 
 .map {
 	background-color: lightgray;
@@ -30,10 +43,22 @@ ul {
 	height: inherit;
 }
 
-/*LIST-VIEW AND INFO-WINDOW*/
+.map.toggle-on {
+	height: calc(100vh - 52px);
+}
+
+/*-- LIST-VIEW AND INFO-WINDOW*/
 
 .info-window {
 	background-color: white;
+}
+
+.info-window.toggle-on {
+	display: none;
+}
+
+.info-window.toggle-override {
+	display: initial !important;
 }
 
 .info-window .header {
@@ -92,7 +117,7 @@ ul {
 
 @media screen and (max-width: 405px) {
 
-	/*G MAP*/
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
@@ -101,7 +126,11 @@ ul {
 		margin: 0 0 1.2em 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	.map.toggle-override {
+		height: 200px;
+	}
+
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		order: 1;
@@ -121,16 +150,20 @@ ul {
 
 @media screen and (min-width: 406px) and (max-width: 520px) {
 
-	/*G MAP*/
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
 		order: 0;
 		height: 220px;
-		margin-bottom: 0 0 1.2em 0;
+		margin: 0 0 1.2em 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	.map.toggle-override {
+		height: 220px !important;
+	}
+
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		order: 1;
@@ -150,16 +183,20 @@ ul {
 
 @media screen and (min-width: 521px) and (max-width: 650px) {
 
-	/*G MAP*/
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
 		order: 0;
 		height: 220px;
-		margin-bottom: 0 0 1.2em 0;
+		margin: 0 0 1.2em 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	.map.toggle-override {
+		height: 220px !important;
+	}
+
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		order: 1;
@@ -179,16 +216,20 @@ ul {
 
 @media screen and (min-width: 651px) and (max-width: 768px) {
 
-	/*G MAP*/
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
 		order: 0;
 		height: 230px;
-		margin-bottom: 0 0 1.2em 0;
+		margin: 0 0 1.2em 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	.map.toggle-override {
+		height: 230px !important;
+	}
+
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		order: 1;
@@ -208,20 +249,27 @@ ul {
 
 @media screen and (min-width: 769px) and (max-width: 991px) {
 
-	/*G MAP*/
+	/*- HEADER*/
+	.navbar-header {
+		width: 100%;
+	}
+
+	/*- MAIN*/
+
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
-		height: 100vh;
-		margin-bottom: 0;
+		height: calc(100vh - 52px);
+		margin: 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		width: 350px;
 		position: fixed;
-	    top: 0;
+	    top: 52px;
 	    right: 0;
 	    bottom: 0;
 	}
@@ -243,20 +291,27 @@ ul {
 
 @media screen and (min-width: 992px) and (max-width: 1170px) {
 
-	/*G MAP*/
+	/*- HEADER*/
+	.navbar-header {
+		width: 100%;
+	}
+
+	/*- MAIN*/
+
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
-		height: 100vh;
-		margin-bottom: 0;
+		height: calc(100vh - 52px);
+		margin : 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		width: 380px;
 		position: fixed;
-	    top: 0;
+	    top: 52px;
 	    right: 0;
 	    bottom: 0;
 	}
@@ -278,20 +333,27 @@ ul {
 
 @media screen and (min-width: 1171px) {
 
-	/*G MAP*/
+	/*- HEADER*/
+	.navbar-header {
+		width: 100%;
+	}
+
+	/*- MAIN*/
+
+	/*-- G MAP*/
 
 	.map {
 		width: 100%;
-		height: 100vh;
+		height: calc(100vh - 52px);
 		margin: 0;
 	}
 
-	/*LIST-VIEW AND INFO-WINDOW*/
+	/*-- LIST-VIEW AND INFO-WINDOW*/
 
 	.info-window {
 		width: 430px;
 		position: fixed;
-	    top: 0;
+	    top: 52px;
 	    right: 0;
 	    bottom: 0;
 	}
