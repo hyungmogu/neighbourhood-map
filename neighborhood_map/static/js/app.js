@@ -357,52 +357,6 @@ var App = {
 		var self = this;
 
 		self.gMap.resize();
-		// var events = [];
-
-		// $.ajax({
-		// 	url: 'https://www.eventbriteapi.com/v3/events/search/?q=' + keyword + '&sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
-		// 	type: 'GET',
-		// 	timeout: 5000,
-		// 	success: function(result, status) {
-
-		// 		if (result['pagination']['object_count'] == 0) {
-		// 			self.infoWindow.displayError('not_found');
-		// 			return;
-		// 		};
-
-		// 		$.map(result['events'], function(eventData, i){
-		// 			events.push(new Event(eventData));
-		// 		});
-
-		// 		self.gMap.removeAllMarkers();
-
-		// 		Model.deleteAll('backUpData');
-		// 		Model.deleteAll('data');
-		// 		Model.add('backUpData', events);
-		// 		Model.add('data', events);
-
-		// 		self.gMap.generateMarkers();
-
-		// 		self.infoWindow.updateEvents();
-
-		// 		App.returnToMain();
-
-		// 	},
-		// 	error: function(xhr, status, error) {
-		// 		console.log('Error occured while searching events: ' + error);
-
-		// 		self.gmap.resetMarkersAnimation();
-
-		// 		if (status == 'error') {
-		// 			self.infoWindow.displayError('default');
-		// 			return;
-		// 		};
-		// 		if (status == 'timeout') {
-		// 			self.infoWindow.displayError('timeout');
-		// 			return;
-		// 		};
-		// 	}
-		// });
 	}
 };
 
