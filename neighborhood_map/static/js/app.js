@@ -74,7 +74,7 @@ var Search = function(keywords, events) {
 
 	self.numOfEvents = events.length;
 	self.searchKeywords = typeof keywords == 'undefined' || keywords == '' ?
-		null: keywords.toLowerCase().split(" ");
+		null: keywords.toLowerCase().split(' ');
 
 	self.returnResults = function() {
 		if (self.searchKeywords == null) {
@@ -254,8 +254,8 @@ var App = {
 		var events = [];
 		var url = 'https://www.eventbriteapi.com/v3/events/search/?' +
 			'sort_by=distance&location.within=20km&location.latitude=' +
-			Model.userLocation["lat"] + '&location.longitude=' +
-			Model.userLocation["lng"] + '&start_date.keyword=today&' +
+			Model.userLocation['lat'] + '&location.longitude=' +
+			Model.userLocation['lng'] + '&start_date.keyword=today&' +
 			'expand=organizer,venue&token=' + eventbriteApiKey;
 
 		$.ajax({
@@ -298,15 +298,15 @@ var App = {
 
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-				Model.userLocation["lat"] = position.coords.latitude;
-				Model.userLocation["lng"] = position.coords.longitude;
+				Model.userLocation['lat'] = position.coords.latitude;
+				Model.userLocation['lng'] = position.coords.longitude;
 
 				callback();
 			}, function(){
-				self.infoWindow.displayError("default");
+				self.infoWindow.displayError('default');
 			});
 		} else {
-			self.infoWindow.displayError("default");
+			self.infoWindow.displayError('default');
 		};
 	},
 	showDetail: function(event) {
