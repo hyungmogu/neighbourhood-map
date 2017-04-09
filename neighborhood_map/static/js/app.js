@@ -1,10 +1,10 @@
 var EVENTBRITE_API_KEY = 'SOLRRNOSEG4UHYXOXLNG';
 
-var Event = function(event) {
+var upcomingEvent = function(event) {
 	var self = this;
 
 	self._getLocation = function(address, city) {
-		return address == null ? city : address + ', ' + city;
+		return address === null ? city : address + ', ' + city;
 	};
 
 	self._getTime = function(startingTime){
@@ -30,42 +30,47 @@ var Event = function(event) {
 		} else {
 			return '<span class="text-danger">Starts in ' + remainingMinutes +
 				' minutes' + '<\/span>';
-		};
+		}
 	};
 
 	self._generateKeywords = function(event) {
-		var location = self._getLocation(event['venue']['address']['address_1'],
-			event['venue']['address']['city']);
-		var harvestTargets = [event['description']['text'],event['name']['text'],location];
+		var location = self._getLocation(event.venue.address.address_1,
+			event.venue.address.city);
+		var harvestTargets = [event.description.text,event.name.text,location];
 		var output = {};
 
-		for (i = 0; i < harvestTargets.length; i++) {
-			if (harvestTargets[i] == null) {
+		for (var i = 0; i < harvestTargets.length; i++) {
+			if (harvestTargets[i] === null) {
 				continue;
-			};
+			}
 
-			$.map(harvestTargets[i].toLowerCase().split(' '), function(keyword, j){
-				if (typeof output['keyword'] == 'undefined') {
-					output[keyword] = 1;
-				} else if (output[keyword] > 1) {
-					output[keyword] += 1;
-				};
-			});
-		};
+      var keywords = harvestTargets[i].toLowerCase().split(' ');
+
+      for (var j = 0; j < keywords.length; j++) {
+      	var keyword = keywords[j];
+
+        if (typeof output.keyword == 'undefined') {
+        	output[keyword] = 1;
+        } else if (output[keyword] > 1) {
+        	output[keyword] += 1;
+        }
+      }
+
+		}
 
 		return output;
 	};
 
-	self.name = event['name']['text'];
-	self.description = event['description']['html'];
-	self.time = self._getTime(event['start']['utc']);
-	self.location = self._getLocation(event['venue']['address']['address_1'],
-		event['venue']['address']['city']);;
-	self.latlng = {lat: parseFloat(event['venue']['latitude']),
-		lng: parseFloat(event['venue']['longitude'])};
-	self.organizerName = event['organizer']['name'];
+	self.name = event.name.text;
+	self.description = event.description.html;
+	self.time = self._getTime(event.start.utc);
+	self.location = self._getLocation(event.venue.address.address_1,
+		event.venue.address.city);
+	self.latlng = {lat: parseFloat(event.venue.latitude),
+		lng: parseFloat(event.venue.longitude)};
+	self.organizerName = event.organizer.name;
 	self.keywords = self._generateKeywords(event);
-	self.url = event['url'];
+	self.url = event.url;
 };
 
 var Search = function(keywords, events) {
@@ -73,11 +78,11 @@ var Search = function(keywords, events) {
 	var self = this;
 
 	self.numOfEvents = events.length;
-	self.searchKeywords = typeof keywords == 'undefined' || keywords == '' ?
+	self.searchKeywords = typeof keywords == 'undefined' || keywords === '' ?
 		null: keywords.toLowerCase().split(' ');
 
 	self.returnResults = function() {
-		if (self.searchKeywords == null) {
+		if (self.searchKeywords === null) {
 			return events;
 		}
 
@@ -99,7 +104,7 @@ var Search = function(keywords, events) {
 			$.map(self.searchKeywords, function(keyword, i){
 				if (typeof event.keywords[keyword] != 'undefined'){
 					matchingKeywordsCnt += 1;
-				};
+				}
 			});
 
 			relevancy = matchingKeywordsCnt / self.searchKeywords.length;
@@ -128,11 +133,11 @@ var Search = function(keywords, events) {
 					var tmp2 = output[j-1];
 					output[j-1] = output[j];
 					output[j] = tmp2;
-				};
+				}
 				j -= 1;
-			};
+			}
 			i += 1;
-		};
+		}
 
 		return output;
 	};
@@ -142,12 +147,12 @@ var Search = function(keywords, events) {
 		var threshold = 0.5;
 
 		// Remove events when its relevancy is below the threshold.
-		for (i = 0; i < relevancies.length; i++) {
+		for (var i = 0; i < relevancies.length; i++) {
 			if (relevancies[i] <= threshold) {
 				output = output.splice(0, i);
 				break;
-			};
-		};
+			}
+		}
 
 		return output;
 	};
@@ -160,7 +165,7 @@ var Model = {
 	get: function(target) {
 		if (target == 'backUpData' || target == 'data') {
 			return Model[target].slice();
-		};
+		}
 	},
 	addData: function(target, data) {
 		$.map(data, function(item){
@@ -170,11 +175,11 @@ var Model = {
 	deleteAll: function(target) {
 		if (target == 'backUpData' || target == 'data') {
 			Model[target] = [];
-		};
+		}
 
 		if (target == 'userLocation') {
 			Model[target] = {lat:0, lng: 0};
-		};
+		}
 	}
 };
 
@@ -219,7 +224,7 @@ var GMap = function(){
 		$.map(Model.data, function(event){
 			if (typeof event.marker != 'undefined') {
 				event.marker.setAnimation(null);
-			};
+			}
 		});
 	};
 
@@ -229,10 +234,10 @@ var GMap = function(){
 
 	self.makeMarkerBounce = function(event) {
 		if (event.marker.getAnimation() !== null) {
-			event.marker.setAnimation(null)
+			event.marker.setAnimation(null);
 		} else {
 			event.marker.setAnimation(google.maps.Animation.BOUNCE);
-		};
+		}
 	};
 };
 
@@ -254,8 +259,8 @@ var App = {
 		var events = [];
 		var url = 'https://www.eventbriteapi.com/v3/events/search/?' +
 			'sort_by=distance&location.within=20km&location.latitude=' +
-			Model.userLocation['lat'] + '&location.longitude=' +
-			Model.userLocation['lng'] + '&start_date.keyword=today&' +
+			Model.userLocation.lat + '&location.longitude=' +
+			Model.userLocation.lng + '&start_date.keyword=today&' +
 			'expand=organizer,venue&token=' + eventbriteApiKey;
 
 		$.ajax({
@@ -264,13 +269,13 @@ var App = {
 			timeout: 5000,
 			success: function(result, status) {
 
-				if (result['pagination']['object_count'] == 0) {
+				if (result.pagination.object_count === 0) {
 					self.infoWindow.displayError('not_found');
 					return;
-				};
+				}
 
-				$.map(result['events'], function(eventData, i){
-					events.push(new Event(eventData));
+				$.map(result.events, function(eventData, i){
+					events.push(new upcomingEvent(eventData));
 				});
 
 				Model.addData('backUpData', events);
@@ -285,11 +290,11 @@ var App = {
 				if (status == 'error') {
 					self.infoWindow.displayError('default');
 					return;
-				};
+				}
 				if (status == 'timeout') {
 					self.infoWindow.displayError('timeout');
 					return;
-				};
+				}
 			}
 		});
 	},
@@ -298,8 +303,8 @@ var App = {
 
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(function(position) {
-				Model.userLocation['lat'] = position.coords.latitude;
-				Model.userLocation['lng'] = position.coords.longitude;
+				Model.userLocation.lat = position.coords.latitude;
+				Model.userLocation.lng = position.coords.longitude;
 
 				callback();
 			}, function(){
@@ -307,7 +312,7 @@ var App = {
 			});
 		} else {
 			self.infoWindow.displayError('default');
-		};
+		}
 	},
 	showDetail: function(event) {
 		var self = this;
@@ -315,7 +320,7 @@ var App = {
 		if (typeof event == 'undefined') {
 			self.infoWindow.displayError('default');
 			return;
-		};
+		}
 
 		self.gMap.resetMarkersAnimation();
 		self.gMap.makeMarkerBounce(event);
@@ -335,18 +340,18 @@ var App = {
 
 		self.gMap.removeAllMarkers();
 
-		if (events.length == 0) {
+		if (events.length === 0) {
 			self.infoWindow.displayError('not_found');
 			return;
-		};
+		}
 
 		var search = new Search(searchKeywords, Model.get('backUpData'));
 		var searchResults = search.returnResults();
 
-		if (searchResults.length == 0) {
+		if (searchResults.length === 0) {
 			self.infoWindow.displayError('not_found');
 			return;
-		};
+		}
 
 		Model.deleteAll('data');
 		Model.addData('data', searchResults);
@@ -401,22 +406,22 @@ var InfoWindow = function() {
 	};
 
 	self.activateToggle = function() {
-		if (self.toggleIsOn() == true) {
+		if (self.toggleIsOn() === true) {
 			self.toggleIsOn(false);
 			App.refreshMap();
 		} else {
 			self.toggleIsOn(true);
 
 			App.refreshMap();
-		};
-	}
+		}
+	};
 
 	self.showDetail = function(event) {
 		self.event(event);
 		self.showEventList(false);
 		self.showEventDescription(true);
 		self.showErrorScreen(false);
-	}
+	};
 
 	self.showMain = function() {
 		self.showEventList(true);
@@ -462,13 +467,13 @@ var InfoWindow = function() {
 			self.showDefaultError(false);
 			self.showTimeoutError(false);
 			self.showNotFoundError(true);
-		};
+		}
 
 		// Show error screen.
 		self.showErrorScreen(true);
 		self.showEventList(false);
 		self.showEventDescription(false);
-	}
+	};
 };
 
 App.init(EVENTBRITE_API_KEY);
