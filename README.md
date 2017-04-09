@@ -1,5 +1,11 @@
 # Udacity FSND 6th Project: Neighbourhood Map
-A project for Javascript Design Pattern course. It's an app that provides interactive information about an area using google street view, knockout.js and an API-of-choice (to be added later).
+This is 6th project for Udacity's `Full Stack Development Nanodegree`. Here, developers are presented with the task of creating a single-page Javascript application featuring a map of a neighbourhood they would like to visit.
+
+This neighbourhood map addresses the problem of where to spend time that's suddenly available in any cities. It displays events near to a user that's starting in less than 24 hours with links for more details.
+
+This project is created using Eventbrite API, Google Map API, Knockout JS, Bootstrap, HTML5, CSS3, Javascript, AJAX, Python 2 and Google App Engine. It is put together using design patterns and object oriented programming.
+
+Note that this project is for demonstration purposes only. The author will not accept any pull requests from third-parties. But, please, free feel to download this repository, and explore the software.
 
 ## Table of Contents
 - Pre-requisites
@@ -10,36 +16,37 @@ A project for Javascript Design Pattern course. It's an app that provides intera
 - Google App Engine
 
 ## Installation
-### 1. Download Project Files
+### Downloading Project Files
 1. Navigate to a directory of choice
 2. Download the repository
 ```
 git clone https://github.com/hyungmogu/udacity-neighbourhood-map
 ```
 
-### 2. Setup Google Map API
+### Setting-up Google Map API
 1. Follow [this](https://developers.google.com/maps/documentation/javascript/get-api-key) instruction, and obtain a key
 2. Navigate to the folder containing `index.html`
 ```
 cd <PROJECT REPO>/neighborhood-map/
 ```
-3. Open index.html, and replace `<INSERT GOOGLE MAP API KEY HERE>` with the key from step 1
+3. Open `index.html`, and replace `<INSERT_GOOGLE_MAP_API_KEY_HERE>` with the key from step 1
 
-### 3. Setup Eventbrite API
+### Setting-up Eventbrite API
 1. Follow [this](https://www.eventbrite.com/support/articles/en_US/How_To/how-to-locate-your-eventbrite-api-user-key?lg=en_US) instruction, and obtain a key
-2. Navigate to the folder containing `index.html`
+2. Navigate to the folder containing `app.js`
 ```
-cd <PROJECT REPO>/neighborhood-map/
+cd <PROJECT REPO>/neighborhood-map/static/js/
 ```
-3. Open index.html, and replace `<INSERT EVENTBRITE API KEY HERE>` with the key from step 1
+3. Open `app.js`, and replace `<INSERT EVENT_BRITE API KEY HERE>` with the key from step 1
 
-## Usage 
+## Usage
 ### Viewing Demo
 1. Navigate to `<PROJECT_REPO>/neighborhood_map/`
 2. Start Google App Engine local server
 ```
 dev_appserver.py app.yaml
-``` 
+```
+3. Open a web browser, and enter `localhost:8080` in the address bar
 
 ### Closing Server
 1. Press `Ctrl` + `c` in window where the local server is running
