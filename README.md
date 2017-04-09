@@ -35,7 +35,7 @@ cd <PROJECT REPO>/neighborhood-map/
 ```
 cd <PROJECT REPO>/neighborhood-map/static/js/
 ```
-3. Open `app.js`, and replace `<INSERT EVENT_BRITE API KEY HERE>` with the key from step 1
+3. Open `app.js`, and replace `<INSERT EVENT_BRITE_API_KEY_HERE>` with the key from step 1
 
 ## Usage
 ### Viewing Demo
