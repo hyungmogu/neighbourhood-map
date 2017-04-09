@@ -108,7 +108,7 @@ header {
 
 .error {
 	padding: 2em 1em;
-	text-align:center;
+	text-align: center;
 }
 
 .error-icon {
@@ -139,7 +139,7 @@ header {
 	}
 
 	.info-window .header {
-		padding: 7px 15px 20px 15px
+		padding: 7px 15px 20px 15px;
 	}
 
 	.error-icon {
@@ -172,7 +172,7 @@ header {
 	}
 
 	.info-window .header {
-		padding: 7px 15px 20px 15px
+		padding: 7px 15px 20px 15px;
 	}
 
 	.error-icon {
@@ -205,7 +205,7 @@ header {
 	}
 
 	.info-window .header {
-		padding: 7px 15px 20px 15px
+		padding: 7px 15px 20px 15px;
 	}
 
 	.error-icon {
@@ -238,7 +238,7 @@ header {
 	}
 
 	.info-window .header {
-		padding: 7px 15px 20px 15px
+		padding: 7px 15px 20px 15px;
 	}
 
 	.error-icon {
@@ -322,7 +322,7 @@ header {
 
 	.info-window .content {
 		height: calc(100% - 75px);
-		overflow-y: scroll
+		overflow-y: scroll;
 	}
 
 	.error-icon {
@@ -364,7 +364,7 @@ header {
 
 	.info-window .content {
 		height: calc(100% - 75px);
-		overflow-y: scroll
+		overflow-y: scroll;
 	}
 
 	.error-icon {
