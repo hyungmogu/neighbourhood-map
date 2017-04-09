@@ -10,34 +10,36 @@ var Event = function(event) {
 	self._getTime = function(startingTime){
 		var MINUTE_IN_MILLISECONDS = 1000 * 60;
 		var HOUR_IN_MILLISECONDS =  1000 * 60 * 60;
-
 		var currentDateTime = new Date();
 		var startingDateTime = new Date(startingTime);
 		var remainingTime = startingDateTime.getTime() - currentDateTime.getTime();
-
 		var remainingHours = Math.floor(remainingTime / HOUR_IN_MILLISECONDS);
 		var remainingMinutes = Math.floor(remainingTime / MINUTE_IN_MILLISECONDS) % 60;
 
 		if (remainingTime < 0) {
 			return '<span class="text-muted">Already Started</span>';
 		} else if (remainingTime > 0 && remainingHours > 4) {
-			return '<span class="text-success">Starts in ' + remainingHours + ' hours ' + remainingMinutes + ' minutes' + '<\/span>';
+			return '<span class="text-success">Starts in ' + remainingHours +
+				' hours ' + remainingMinutes + ' minutes' + '<\/span>';
 		} else if (remainingTime > 0 && remainingHours <= 4 && remainingHours > 2) {
-			return '<span class="text-warning">Starts in ' + remainingHours + ' hours ' + remainingMinutes + ' minutes' + '<\/span>';
+			return '<span class="text-warning">Starts in ' + remainingHours +
+				' hours ' + remainingMinutes + ' minutes' + '<\/span>';
 		} else if (remainingTime > 0 && remainingHours <= 2 && remainingHours > 0) {
-			return '<span class="text-danger">Starts in ' + remainingHours + ' hours ' + remainingMinutes + ' minutes' + '<\/span>';
+			return '<span class="text-danger">Starts in ' + remainingHours +
+				' hours ' + remainingMinutes + ' minutes' + '<\/span>';
 		} else {
-			return '<span class="text-danger">Starts in ' + remainingMinutes + ' minutes' + '<\/span>';
-		}
+			return '<span class="text-danger">Starts in ' + remainingMinutes +
+				' minutes' + '<\/span>';
+		};
 	};
 
 	self._generateKeywords = function(event) {
-		var location = self._getLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);
+		var location = self._getLocation(event['venue']['address']['address_1'],
+			event['venue']['address']['city']);
 		var harvestTargets = [event['description']['text'],event['name']['text'],location];
 		var output = {};
 
 		for (i = 0; i < harvestTargets.length; i++) {
-
 			if (harvestTargets[i] == null) {
 				continue;
 			};
@@ -49,17 +51,18 @@ var Event = function(event) {
 					output[keyword] += 1;
 				};
 			});
-
 		};
 
 		return output;
-	}
+	};
 
 	self.name = event['name']['text'];
 	self.description = event['description']['html'];
 	self.time = self._getTime(event['start']['utc']);
-	self.location = self._getLocation(event['venue']['address']['address_1'], event['venue']['address']['city']);;
-	self.latlng = {lat: parseFloat(event['venue']['latitude']), lng: parseFloat(event['venue']['longitude'])};
+	self.location = self._getLocation(event['venue']['address']['address_1'],
+		event['venue']['address']['city']);;
+	self.latlng = {lat: parseFloat(event['venue']['latitude']),
+		lng: parseFloat(event['venue']['longitude'])};
 	self.organizerName = event['organizer']['name'];
 	self.keywords = self._generateKeywords(event);
 	self.url = event['url'];
@@ -68,13 +71,12 @@ var Event = function(event) {
 var Search = function(keywords, events) {
 
 	var self = this;
-	console.log(keywords);
+
 	self.numOfEvents = events.length;
-	self.searchKeywords = typeof keywords == 'undefined' || keywords == '' ? null: keywords.toLowerCase().split(" ");
+	self.searchKeywords = typeof keywords == 'undefined' || keywords == '' ?
+		null: keywords.toLowerCase().split(" ");
 
 	self.returnResults = function() {
-
-		// Return everything if no keywords are entered
 		if (self.searchKeywords == null) {
 			return events;
 		}
@@ -82,17 +84,16 @@ var Search = function(keywords, events) {
 		var relevancies = self._calculateRelevancies(events);
 		var sortedEvents = self._sortEvents(relevancies, events);
 		var filteredEvents = self._removeIrrevalentEvents(relevancies, sortedEvents);
+
 		return filteredEvents;
 	};
 
 	self._calculateRelevancies = function(events) {
-		// Note: Relevancy reflects the amount of matching between
-		// an event and search keywords.
 		var relevancy;
 		var output = [];
 
+		// Calculate the amount of matching between an event and search keywords.
 		$.map(events, function(event, i){
-
 			var matchingKeywordsCnt = 0;
 
 			$.map(self.searchKeywords, function(keyword, i){
@@ -102,6 +103,7 @@ var Search = function(keywords, events) {
 			});
 
 			relevancy = matchingKeywordsCnt / self.searchKeywords.length;
+
 			output.push(relevancy);
 		});
 
@@ -111,10 +113,9 @@ var Search = function(keywords, events) {
 	self._sortEvents = function(relevancies, events) {
 		var output = events;
 
-		// Note: Insertion algorithm is used.
+		// Sort using insertion algorithm.
 		var i = 1;
 		while (i < self.numOfEvents) {
-
 			var j = i;
 			while  (j > 0) {
 
@@ -123,37 +124,33 @@ var Search = function(keywords, events) {
 					relevancies[j-1] = relevancies[j];
 					relevancies[j] = tmp1;
 
-					// Organize events using relevancies as a reference
+					// Organize events using relevancies as a reference.
 					var tmp2 = output[j-1];
 					output[j-1] = output[j];
 					output[j] = tmp2;
 				};
-
 				j -= 1;
-
 			};
-
 			i += 1;
-
 		};
-		return output;
 
+		return output;
 	};
 
 	self._removeIrrevalentEvents = function(relevancies, sortedEvents) {
 		var output = sortedEvents;
 		var threshold = 0.5;
 
-		// Remove events with relevancy below the threshold
+		// Remove events when its relevancy is below the threshold.
 		for (i = 0; i < relevancies.length; i++) {
 			if (relevancies[i] <= threshold) {
 				output = output.splice(0, i);
 				break;
 			};
 		};
+
 		return output;
 	};
-
 };
 
 var Model = {
@@ -185,7 +182,8 @@ var GMap = function(){
 	var self = this;
 
 	self.init = function() {
-		self.map = new google.maps.Map(document.getElementById('g-map'),{zoom: 10,center: Model.userLocation});
+		self.map = new google.maps.Map(document.getElementById('g-map'),
+			{zoom: 10,center: Model.userLocation});
 
 		self.generateMarkers();
 	};
@@ -231,10 +229,10 @@ var GMap = function(){
 
 	self.makeMarkerBounce = function(event) {
 		if (event.marker.getAnimation() !== null) {
-		  event.marker.setAnimation(null);
+			event.marker.setAnimation(null)
 		} else {
-		  event.marker.setAnimation(google.maps.Animation.BOUNCE);
-		}
+			event.marker.setAnimation(google.maps.Animation.BOUNCE);
+		};
 	};
 };
 
@@ -252,10 +250,16 @@ var App = {
 	},
 	_load: function(eventbriteApiKey) {
 		var self = this;
+
 		var events = [];
+		var url = 'https://www.eventbriteapi.com/v3/events/search/?' +
+			'sort_by=distance&location.within=20km&location.latitude=' +
+			Model.userLocation["lat"] + '&location.longitude=' +
+			Model.userLocation["lng"] + '&start_date.keyword=today&' +
+			'expand=organizer,venue&token=' + eventbriteApiKey;
 
 		$.ajax({
-			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=' + eventbriteApiKey,
+			url: url,
 			type: 'GET',
 			timeout: 5000,
 			success: function(result, status) {
@@ -311,7 +315,7 @@ var App = {
 		if (typeof event == 'undefined') {
 			self.infoWindow.displayError('default');
 			return;
-		}
+		};
 
 		self.gMap.resetMarkersAnimation();
 		self.gMap.makeMarkerBounce(event);
@@ -402,8 +406,8 @@ var InfoWindow = function() {
 			App.refreshMap();
 		} else {
 			self.toggleIsOn(true);
-			App.refreshMap();
 
+			App.refreshMap();
 		};
 	}
 
@@ -423,7 +427,6 @@ var InfoWindow = function() {
 	};
 
 	self.searchEvents = function() {
-		// var sanitizedKeywords = encodeURIComponent(self.searchKeywords()).replace(/%20/g, '+');
 		App.search(self.searchKeywords());
 	};
 
@@ -432,10 +435,10 @@ var InfoWindow = function() {
 	};
 
 	self.updateEvents = function() {
-		// Refresh the observable array
+		// Refresh the observable array.
 		self.events([]);
 
-		// Update the event list
+		// Update the event list.
 		$.map(Model.data, function(eventItem) {
 			self.events.push(eventItem);
 		});
@@ -446,7 +449,7 @@ var InfoWindow = function() {
 	};
 
 	self.displayError = function(type) {
-		// Determine error display type
+		// Determine error display type.
 		if (type == 'default') {
 			self.showDefaultError(true);
 			self.showTimeoutError(false);
@@ -459,14 +462,13 @@ var InfoWindow = function() {
 			self.showDefaultError(false);
 			self.showTimeoutError(false);
 			self.showNotFoundError(true);
-		}
+		};
 
-		// Show error screen
+		// Show error screen.
 		self.showErrorScreen(true);
 		self.showEventList(false);
 		self.showEventDescription(false);
 	}
-
 };
 
 App.init(EVENTBRITE_API_KEY);
