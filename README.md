@@ -16,28 +16,28 @@ Note that this project is for demonstration purposes only. The author will not a
 - Google App Engine
 
 ## Installation
-### 1. Download Project Files
+### Downloading Project Files
 1. Navigate to a directory of choice
 2. Download the repository
 ```
 git clone https://github.com/hyungmogu/udacity-neighbourhood-map
 ```
 
-### 2. Setup Google Map API
+### Setting-up Google Map API
 1. Follow [this](https://developers.google.com/maps/documentation/javascript/get-api-key) instruction, and obtain a key
 2. Navigate to the folder containing `index.html`
 ```
 cd <PROJECT REPO>/neighborhood-map/
 ```
-3. Open `index.html`, and replace `<INSERT GOOGLE MAP API KEY HERE>` with the key from step 1
+3. Open `index.html`, and replace `<INSERT_GOOGLE_MAP_API_KEY_HERE>` with the key from step 1
 
-### 3. Setup Eventbrite API
+### Setting-up Eventbrite API
 1. Follow [this](https://www.eventbrite.com/support/articles/en_US/How_To/how-to-locate-your-eventbrite-api-user-key?lg=en_US) instruction, and obtain a key
 2. Navigate to the folder containing `app.js`
 ```
 cd <PROJECT REPO>/neighborhood-map/static/js/
 ```
-3. Open `app.js`, and replace `<INSERT EVENTBRITE API KEY HERE>` with the key from step 1
+3. Open `app.js`, and replace `<INSERT EVENT_BRITE API KEY HERE>` with the key from step 1
 
 ## Usage
 ### Viewing Demo
@@ -46,6 +46,7 @@ cd <PROJECT REPO>/neighborhood-map/static/js/
 ```
 dev_appserver.py app.yaml
 ```
+3. Open a web browser, and enter `localhost:8080` in the address bar
 
 ### Closing Server
 1. Press `Ctrl` + `c` in window where the local server is running
