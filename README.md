@@ -1,6 +1,4 @@
 # Udacity FSND 6th Project: Neighbourhood Map
-This is 6th project for Udacity's `Full Stack Development Nanodegree`. Here, developers are presented with the task of creating a single-page Javascript application featuring a map of a neighbourhood they would like to visit.
-
 This neighbourhood map addresses the problem of where to spend time that's suddenly available in any cities. It displays events near to a user that's starting in less than 24 hours with links for more details.
 
 This project is created using Eventbrite API, Google Map API, Knockout JS, Bootstrap, HTML5, CSS3, Javascript, AJAX, Python 2 and Google App Engine. It is put together using design patterns and object oriented programming.
@@ -37,7 +35,7 @@ cd <PROJECT REPO>/neighborhood-map/
 ```
 cd <PROJECT REPO>/neighborhood-map/static/js/
 ```
-3. Open `app.js`, and replace `<INSERT EVENT_BRITE API KEY HERE>` with the key from step 1
+3. Open `app.js`, and replace `<INSERT EVENT_BRITE_API_KEY_HERE>` with the key from step 1
 
 ## Usage
 ### Viewing Demo
