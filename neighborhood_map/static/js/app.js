@@ -1,3 +1,5 @@
+var EVENTBRITE_API_KEY = '<INSERT_EVENT_BRITE_API_KEY_HERE>';
+
 var Event = function(event) {
 	var self = this;
 
@@ -72,7 +74,6 @@ var Search = function(keywords, events) {
 
 	self.returnResults = function() {
 
-		console.log(self.searchKeywords);
 		// Return everything if no keywords are entered
 		if (self.searchKeywords == null) {
 			return events;
@@ -238,7 +239,7 @@ var GMap = function(){
 };
 
 var App = {
-	init: function() {
+	init: function(eventbriteApiKey) {
 		var self = this;
 
 		self.infoWindow = new InfoWindow();
@@ -246,15 +247,15 @@ var App = {
 
 		ko.applyBindings(self.infoWindow);
 		App._getUserLocation(function(){
-			App._load();
+			App._load(eventbriteApiKey);
 		});
 	},
-	_load: function(callback) {
+	_load: function(eventbriteApiKey, callback) {
 		var self = this;
 		var events = [];
 
 		$.ajax({
-			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=SOLRRNOSEG4UHYXOXLNG',
+			url: 'https://www.eventbriteapi.com/v3/events/search/?sort_by=distance&location.within=20km&location.latitude=' + Model.userLocation["lat"] + '&location.longitude=' + Model.userLocation["lng"] + '&start_date.keyword=today&expand=organizer,venue&token=' + eventbriteApiKey,
 			type: 'GET',
 			timeout: 5000,
 			success: function(result, status) {
@@ -468,4 +469,4 @@ var InfoWindow = function() {
 
 };
 
-App.init();
+App.init(EVENTBRITE_API_KEY);
