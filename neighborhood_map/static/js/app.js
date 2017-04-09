@@ -1,4 +1,4 @@
-var EVENTBRITE_API_KEY = '<INSERT_EVENT_BRITE_API_KEY_HERE>';
+var EVENTBRITE_API_KEY = 'SOLRRNOSEG4UHYXOXLNG';
 
 var Event = function(event) {
 	var self = this;
