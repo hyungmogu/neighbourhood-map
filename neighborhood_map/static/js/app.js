@@ -225,8 +225,8 @@ var GMap = function(){
 		});
 	};
 
-	self.storeMarker = function(event, marker) {
-		event.marker = marker;
+	self.storeMarker = function(event, gmarker) {
+		event.marker = gmarker;
 	};
 
 	self.makeMarkerBounce = function(event) {
@@ -250,7 +250,7 @@ var App = {
 			App._load(eventbriteApiKey);
 		});
 	},
-	_load: function(eventbriteApiKey, callback) {
+	_load: function(eventbriteApiKey) {
 		var self = this;
 		var events = [];
 
@@ -354,7 +354,7 @@ var App = {
 		App.returnToMain();
 
 	},
-	refreshMap: function(keyword) {
+	refreshMap: function() {
 		var self = this;
 
 		self.gMap.resize();
