@@ -33,34 +33,6 @@ var upcomingEvent = function(event) {
 		}
 	};
 
-	self._generateKeywords = function(event) {
-		var location = self._getLocation(event.venue.address.address_1,
-			event.venue.address.city);
-		var harvestTargets = [event.description.text,event.name.text,location];
-		var output = {};
-
-		for (var i = 0; i < harvestTargets.length; i++) {
-			if (harvestTargets[i] === null) {
-				continue;
-			}
-
-      var keywords = harvestTargets[i].toLowerCase().split(' ');
-
-      for (var j = 0; j < keywords.length; j++) {
-      	var keyword = keywords[j];
-
-        if (typeof output.keyword == 'undefined') {
-        	output[keyword] = 1;
-        } else if (output[keyword] > 1) {
-        	output[keyword] += 1;
-        }
-      }
-
-		}
-
-		return output;
-	};
-
 	self.name = event.name.text;
 	self.description = event.description.html;
 	self.time = self._getTime(event.start.utc);
@@ -69,117 +41,16 @@ var upcomingEvent = function(event) {
 	self.latlng = {lat: parseFloat(event.venue.latitude),
 		lng: parseFloat(event.venue.longitude)};
 	self.organizerName = event.organizer.name;
-	self.keywords = self._generateKeywords(event);
 	self.url = event.url;
 };
 
-var Search = function(keywords, events) {
-
-	var self = this;
-
-	self.numOfEvents = events.length;
-	self.searchKeywords = typeof keywords == 'undefined' || keywords === '' ?
-		null: keywords.toLowerCase().split(' ');
-
-	self.returnResults = function() {
-		if (self.searchKeywords === null) {
-			return events;
-		}
-
-		var relevancies = self._calculateRelevancies(events);
-		var sortedEvents = self._sortEvents(relevancies, events);
-		var filteredEvents = self._removeIrrevalentEvents(relevancies, sortedEvents);
-
-		return filteredEvents;
-	};
-
-	self._calculateRelevancies = function(events) {
-		var relevancy;
-		var output = [];
-
-		// Calculate the amount of matching between an event and search keywords.
-		$.map(events, function(event, i){
-			var matchingKeywordsCnt = 0;
-
-			$.map(self.searchKeywords, function(keyword, i){
-				if (typeof event.keywords[keyword] != 'undefined'){
-					matchingKeywordsCnt += 1;
-				}
-			});
-
-			relevancy = matchingKeywordsCnt / self.searchKeywords.length;
-
-			output.push(relevancy);
-		});
-
-		return output;
-	};
-
-	self._sortEvents = function(relevancies, events) {
-		var output = events;
-
-		// Sort using insertion algorithm.
-		var i = 1;
-		while (i < self.numOfEvents) {
-			var j = i;
-			while  (j > 0) {
-
-				if (relevancies[j] > relevancies[j-1]) {
-					var tmp1 = relevancies[j-1];
-					relevancies[j-1] = relevancies[j];
-					relevancies[j] = tmp1;
-
-					// Organize events using relevancies as a reference.
-					var tmp2 = output[j-1];
-					output[j-1] = output[j];
-					output[j] = tmp2;
-				}
-				j -= 1;
-			}
-			i += 1;
-		}
-
-		return output;
-	};
-
-	self._removeIrrevalentEvents = function(relevancies, sortedEvents) {
-		var output = sortedEvents;
-		var threshold = 0.5;
-
-		// Remove events when its relevancy is below the threshold.
-		for (var i = 0; i < relevancies.length; i++) {
-			if (relevancies[i] <= threshold) {
-				output = output.splice(0, i);
-				break;
-			}
-		}
-
-		return output;
-	};
-};
-
 var Model = {
-	backUpData: [],
 	data: [],
 	userLocation: {lat: 0, lng: 0},
-	get: function(target) {
-		if (target == 'backUpData' || target == 'data') {
-			return Model[target].slice();
-		}
-	},
-	addData: function(target, data) {
-		$.map(data, function(item){
-			Model[target].push(item);
+	addData: function(items) {
+		$.map(items, function(item){
+			Model.data.push(item);
 		});
-	},
-	deleteAll: function(target) {
-		if (target == 'backUpData' || target == 'data') {
-			Model[target] = [];
-		}
-
-		if (target == 'userLocation') {
-			Model[target] = {lat:0, lng: 0};
-		}
 	}
 };
 
@@ -214,18 +85,16 @@ var GMap = function(){
 		});
 	};
 
-	self.removeAllMarkers = function() {
-		$.map(Model.data,function(event){
-			event.marker.setMap(null);
-		});
-	};
-
 	self.resetMarkersAnimation = function() {
 		$.map(Model.data, function(event){
 			if (typeof event.marker != 'undefined') {
 				event.marker.setAnimation(null);
 			}
 		});
+	};
+
+	self.resetMarkerAnimation = function(marker) {
+		marker.setAnimation(null);
 	};
 
 	self.storeMarker = function(event, gmarker) {
@@ -239,6 +108,11 @@ var GMap = function(){
 			event.marker.setAnimation(google.maps.Animation.BOUNCE);
 		}
 	};
+
+	self.updateMarkerVisibility = function(type, marker) {
+		type == "hide" ? marker.setVisible(false) : marker.setVisible(true);
+	};
+
 };
 
 var App = {
@@ -278,8 +152,7 @@ var App = {
 					events.push(new upcomingEvent(eventData));
 				});
 
-				Model.addData('backUpData', events);
-				Model.addData('data', events);
+				Model.addData(events);
 
 				self.gMap.init();
 				self.infoWindow.init();
@@ -334,35 +207,28 @@ var App = {
 
 		self.infoWindow.showMain();
 	},
-	search: function(searchKeywords) {
+
+	updateMarkerVisibility: function(type, marker) {
 		var self = this;
-		var events = Model.get('backUpData');
 
-		self.gMap.removeAllMarkers();
-
-		if (events.length === 0) {
-			self.infoWindow.displayError('not_found');
-			return;
-		}
-
-		var search = new Search(searchKeywords, Model.get('backUpData'));
-		var searchResults = search.returnResults();
-
-		if (searchResults.length === 0) {
-			self.infoWindow.displayError('not_found');
-			return;
-		}
-
-		Model.deleteAll('data');
-		Model.addData('data', searchResults);
-
-		self.gMap.generateMarkers();
-
-		self.infoWindow.updateEvents();
-
-		App.returnToMain();
+		self.gMap.updateMarkerVisibility(type, marker);
 
 	},
+
+	showAllMarkers: function(events) {
+		var self = this;
+
+		$.map(events, function(event, i){
+			self.gMap.updateMarkerVisibility('show', event.marker);
+		});
+	},
+
+	resetMarkerAnimation: function(marker) {
+		var self = this;
+
+		self.gMap.resetMarkerAnimation(marker);
+	},
+
 	refreshMap: function() {
 		var self = this;
 
@@ -371,6 +237,9 @@ var App = {
 };
 
 var InfoWindow = function() {
+	// TODO: Change toggleIsOn in activateToggle() to hideInfoWindow
+	// TODO: Center a marker when the corresponding item in the list-view is clicked
+
 	var self = this;
 	//////////////
 	//
@@ -380,7 +249,7 @@ var InfoWindow = function() {
 
 	self.events = ko.observableArray([]);
 	self.event = ko.observable();
-	self.searchKeywords = ko.observable();
+	self.searchKeywords = ko.observable('');
 
 	self.toggleIsOn = ko.observable(false);
 	self.showEventDescription = ko.observable(false);
@@ -389,6 +258,27 @@ var InfoWindow = function() {
 	self.showDefaultError = ko.observable(false);
 	self.showTimeoutError = ko.observable(false);
 	self.showNotFoundError = ko.observable(false);
+
+	self.filteredEvents = ko.computed(function(){
+		if (self.searchKeywords() == "") {
+			App.showAllMarkers(self.events());
+			return self.events();
+		} else {
+			return ko.utils.arrayFilter(self.events(), function(event){
+				if (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1) {
+					App.resetMarkerAnimation(event.marker);
+					App.updateMarkerVisibility('show', event.marker);
+					return true;
+				} else {
+					App.resetMarkerAnimation(event.marker);
+					App.updateMarkerVisibility('hide', event.marker);
+				}
+
+			});
+		}
+	});
 
 	///////////////
 	//
@@ -429,10 +319,6 @@ var InfoWindow = function() {
 		self.showErrorScreen(false);
 
 		App.refreshMap();
-	};
-
-	self.searchEvents = function() {
-		App.search(self.searchKeywords());
 	};
 
 	self.loadDescription = function(event) {
