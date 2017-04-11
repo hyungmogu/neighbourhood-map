@@ -80,6 +80,8 @@ var GMap = function(){
 
 			marker.addListener('click', function(){
 				App.showDetail(event);
+				self.resize();
+				self.centerMarker(event.marker);
 			});
 
 		});
@@ -111,6 +113,11 @@ var GMap = function(){
 
 	self.updateMarkerVisibility = function(type, marker) {
 		type == "hide" ? marker.setVisible(false) : marker.setVisible(true);
+	};
+
+	self.centerMarker = function(marker) {
+		self.map.setZoom(13);
+		self.map.setCenter(marker.getPosition());
 	};
 
 };
@@ -233,6 +240,13 @@ var App = {
 		var self = this;
 
 		self.gMap.resize();
+	},
+
+	centerMarker: function(marker) {
+		var self = this;
+
+		self.gMap.centerMarker(marker);
+
 	}
 };
 
@@ -323,6 +337,7 @@ var InfoWindow = function() {
 
 	self.loadDescription = function(event) {
 		App.showDetail(event);
+		App.centerMarker(event.marker);
 	};
 
 	self.updateEvents = function() {
