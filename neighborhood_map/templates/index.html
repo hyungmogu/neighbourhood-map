@@ -24,18 +24,11 @@
 		</section>
 		<section class="info-window" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
 			<div class="header">
-				<form class="form" data-bind="submit: searchEvents">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:searchKeywords">
-						<span class="input-group-btn">
-							<button class="btn btn-default" type="submit">Search</button>
-						</span>
-					</div>
-				</form>
+				<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:searchKeywords, valueUpdate: 'afterkeydown', event: {keyup: filteredEvents().length > 0 ? showMain : displayError('not_found')}">
 			</div>
 			<div class="content">
 
-				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: showEventList}, visible: showEventList"></ul>
+				<ul class="events list" data-bind="template: {name: 'event-list', foreach: filteredEvents, as: 'event', if: showEventList}, visible: showEventList"></ul>
 
 				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: showEventDescription}, visible: showEventDescription"></div>
 				<div class="error" data-bind="visible: showErrorScreen">
