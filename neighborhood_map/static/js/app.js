@@ -174,8 +174,16 @@ var App = {
 			timeout: 10000,
 			success: function(result, status) {
 
+				// Don't proceed if Google Map API fails to load
+				if(App.infoWindow.showGMapError()) {
+					return;
+				}
+
 				// This is a first-aid solution to the display of 'not_found'
 				// error at the bottom of event list
+				//
+				// Not Found error happens when no elements exist in
+				// self.infowindow.filteredElements()
 				self.infoWindow.resetErrors();
 
 				self.dataLoaded = true;
@@ -292,6 +300,12 @@ var App = {
 
 		self.gMap.centerMarker(marker);
 
+	},
+
+	displayError: function(type) {
+		var self = this;
+
+		self.infoWindow.displayError(type);
 	}
 };
 
@@ -316,6 +330,7 @@ var InfoWindow = function() {
 	self.showDefaultError = ko.observable(false);
 	self.showTimeoutError = ko.observable(false);
 	self.showNotFoundError = ko.observable(false);
+	self.showGMapError = ko.observable(false);
 
 	self.filteredEvents = ko.computed(function(){
 		if (!App.gMapApiLoaded && !App.dataLoaded) {
@@ -414,14 +429,22 @@ var InfoWindow = function() {
 			self.showDefaultError(true);
 			self.showTimeoutError(false);
 			self.showNotFoundError(false);
+			self.showGMapError(false);
 		} else if (type == 'timeout') {
 			self.showDefaultError(false);
 			self.showTimeoutError(true);
 			self.showNotFoundError(false);
+			self.showGMapError(false);
 		} else if (type == 'not_found') {
 			self.showDefaultError(false);
 			self.showTimeoutError(false);
 			self.showNotFoundError(true);
+			self.showGMapError(false);
+		} else if (type == 'gmap') {
+			self.showDefaultError(false);
+			self.showTimeoutError(false);
+			self.showNotFoundError(false);
+			self.showGMapError(true);
 		}
 
 		// Show error screen.

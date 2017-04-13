@@ -34,6 +34,7 @@
 					<div class="not-found" data-bind="template: {name: 'error-not-found', if: showNotFoundError}"></div>
 					<div class="timeout" data-bind="template: {name: 'error-timeout', if: showTimeoutError}"></div>
 					<div class="default" data-bind="template: {name: 'error-default', if: showDefaultError}"></div>
+					<div class="default" data-bind="template: {name: 'error-gmap', if: showGMapError}"></div>
 				</div>
 			</div>
 			<script type="text/html" id="event-list">
@@ -72,11 +73,16 @@
 				<h3>Not Found (404)</h3>
 				<p>Sorry. Error occured while retrieving data.</p>
 			</script>
+			<script type="text/html" id="error-gmap">
+				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
+				<h3>Server Error (500)</h3>
+				<p>Sorry. Something went wrong while loading Google Map API.</p>
+			</script>
 		</section>
 	</main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="/static/js/lib/knockout-3.4.2.js"></script>
 <script src="/static/js/app.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjRtlz7LH0-t1hmmSE_yenGqcayD4Euo&callback=App.gMap.init"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjRtlz7LH0-t1hmmSE_yenGqcayD4Euo&callback=App.gMap.init" onerror="App.displayError('gmap');"></script>
 </html>
