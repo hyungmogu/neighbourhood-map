@@ -58,14 +58,27 @@ var GMap = function(){
 	var self = this;
 
 	self.init = function() {
-		self.map = new google.maps.Map(document.getElementById('g-map'),
-			{zoom: 10,center: Model.userLocation});
+		App.gMapApiLoaded = true;
 
+		// Response when Google Map API is loaded before data
+		if (!App.dataLoaded) {
+			self.generateMap(Model.userLocation);
+			return;
+		}
+
+		// Response when when Google Map Api is loaded after data
+		self.generateMap(Model.userLocation);
 		self.generateMarkers();
+
 	};
 
 	self.resize = function() {
 		google.maps.event.trigger(self.map, 'resize');
+	};
+
+	self.generateMap = function(userLocation) {
+		self.map = new google.maps.Map(document.getElementById('g-map'),
+			{zoom: 10,center: userLocation});
 	};
 
 	self.generateMarkers = function() {
@@ -112,7 +125,11 @@ var GMap = function(){
 	};
 
 	self.updateMarkerVisibility = function(type, marker) {
-		type == "hide" ? marker.setVisible(false) : marker.setVisible(true);
+    if (type == "hide") {
+      marker.setVisible(false);
+    } else{
+      marker.setVisible(true);
+    }
 	};
 
 	self.centerMarker = function(marker) {
@@ -120,11 +137,18 @@ var GMap = function(){
 		self.map.setCenter(marker.getPosition());
 	};
 
+	self.recenter = function() {
+		self.map.setCenter(Model.userLocation);
+	};
+
 };
 
 var App = {
 	init: function(eventbriteApiKey) {
 		var self = this;
+
+		self.dataLoaded = false;
+		self.gMapApiLoaded = false;
 
 		self.infoWindow = new InfoWindow();
 		self.gMap = new GMap();
@@ -134,10 +158,10 @@ var App = {
 			App._load(eventbriteApiKey);
 		});
 	},
+
 	_load: function(eventbriteApiKey) {
 		var self = this;
 
-		var events = [];
 		var url = 'https://www.eventbriteapi.com/v3/events/search/?' +
 			'sort_by=distance&location.within=20km&location.latitude=' +
 			Model.userLocation.lat + '&location.longitude=' +
@@ -147,22 +171,32 @@ var App = {
 		$.ajax({
 			url: url,
 			type: 'GET',
-			timeout: 5000,
+			timeout: 10000,
 			success: function(result, status) {
+
+				// This is a first-aid solution to the display of 'not_found'
+				// error at the bottom of event list
+				self.infoWindow.resetErrors();
+
+				self.dataLoaded = true;
 
 				if (result.pagination.object_count === 0) {
 					self.infoWindow.displayError('not_found');
 					return;
 				}
 
-				$.map(result.events, function(eventData, i){
-					events.push(new upcomingEvent(eventData));
-				});
+				// Response when Google Map API is loaded after data
+				if (!self.gMapApiLoaded) {
+					App._createEventObjs(result);
+					self.infoWindow.loadEvents();
+					return;
+				}
 
-				Model.addData(events);
-
-				self.gMap.init();
-				self.infoWindow.init();
+				// Response when Google Map API is loaded before data
+				App._createEventObjs(result);
+				self.gMap.generateMarkers();
+				self.infoWindow.loadEvents();
+				self.gMap.recenter();
 			},
 			error: function(xhr, status, error) {
 				console.log('Error occured while loading events: ' + error);
@@ -178,6 +212,7 @@ var App = {
 			}
 		});
 	},
+
 	_getUserLocation: function(callback) {
 		var self = this;
 
@@ -194,6 +229,15 @@ var App = {
 			self.infoWindow.displayError('default');
 		}
 	},
+
+	_createEventObjs: function(data) {
+		var events = [];
+		$.map(data.events, function(event, i){
+			events.push(new upcomingEvent(event));
+		});
+		Model.addData(events);
+	},
+
 	showDetail: function(event) {
 		var self = this;
 
@@ -207,6 +251,7 @@ var App = {
 
 		self.infoWindow.showDetail(event);
 	},
+
 	returnToMain: function() {
 		var self = this;
 
@@ -236,7 +281,7 @@ var App = {
 		self.gMap.resetMarkerAnimation(marker);
 	},
 
-	refreshMap: function() {
+	refreshMapDimension: function() {
 		var self = this;
 
 		self.gMap.resize();
@@ -252,7 +297,6 @@ var App = {
 
 var InfoWindow = function() {
 	// TODO: Change toggleIsOn in activateToggle() to hideInfoWindow
-	// TODO: Center a marker when the corresponding item in the list-view is clicked
 
 	var self = this;
 	//////////////
@@ -274,24 +318,33 @@ var InfoWindow = function() {
 	self.showNotFoundError = ko.observable(false);
 
 	self.filteredEvents = ko.computed(function(){
-		if (self.searchKeywords() == "") {
+		if (!App.gMapApiLoaded && !App.dataLoaded) {
+			return self.events();
+		}
+
+		if (self.searchKeywords() === "") {
 			App.showAllMarkers(self.events());
 			return self.events();
-		} else {
-			return ko.utils.arrayFilter(self.events(), function(event){
-				if (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-					event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1) {
-					App.resetMarkerAnimation(event.marker);
-					App.updateMarkerVisibility('show', event.marker);
-					return true;
-				} else {
-					App.resetMarkerAnimation(event.marker);
-					App.updateMarkerVisibility('hide', event.marker);
-				}
-
-			});
 		}
+
+		// Filter list based on keywords in title, location, and description.
+		//
+		// Also made markers to be filtered on the map as event list are being
+		// filtered.
+		return ko.utils.arrayFilter(self.events(), function(event){
+			if (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+				event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+				event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1) {
+				App.resetMarkerAnimation(event.marker);
+				App.updateMarkerVisibility('show', event.marker);
+				return true;
+			} else {
+				App.resetMarkerAnimation(event.marker);
+				App.updateMarkerVisibility('hide', event.marker);
+			}
+
+		});
+
 	});
 
 	///////////////
@@ -300,23 +353,23 @@ var InfoWindow = function() {
 	//
 	//////////////
 
-	self.init = function() {
-		// Display list of events
+	self.loadEvents = function() {
 		$.map(Model.data, function(event){
 			self.events.push(event);
-			self.showEventList(true);
-			self.showEventDescription(false);
 		});
+
+		self.showEventList(true);
+		self.showEventDescription(false);
 	};
 
 	self.activateToggle = function() {
 		if (self.toggleIsOn() === true) {
 			self.toggleIsOn(false);
-			App.refreshMap();
+			App.refreshMapDimension();
 		} else {
 			self.toggleIsOn(true);
 
-			App.refreshMap();
+			App.refreshMapDimension();
 		}
 	};
 
@@ -331,8 +384,6 @@ var InfoWindow = function() {
 		self.showEventList(true);
 		self.showEventDescription(false);
 		self.showErrorScreen(false);
-
-		App.refreshMap();
 	};
 
 	self.loadDescription = function(event) {
@@ -352,6 +403,9 @@ var InfoWindow = function() {
 
 	self.goBackToEventList = function() {
 		App.returnToMain();
+
+		// Include this code to resize map when on toggle
+		App.refreshMapDimension();
 	};
 
 	self.displayError = function(type) {
@@ -374,6 +428,14 @@ var InfoWindow = function() {
 		self.showErrorScreen(true);
 		self.showEventList(false);
 		self.showEventDescription(false);
+	};
+
+	self.resetErrors = function() {
+		self.showErrorScreen(false);
+
+		self.showDefaultError(false);
+		self.showTimeoutError(false);
+		self.showNotFoundError(false);
 	};
 };
 
