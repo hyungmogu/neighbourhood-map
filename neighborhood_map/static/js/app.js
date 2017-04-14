@@ -69,6 +69,7 @@ var GMap = function(){
 		// Response when when Google Map Api is loaded after data
 		self.generateMap(Model.userLocation);
 		self.generateMarkers();
+		App.removeLoadingScreen();
 
 	};
 
@@ -133,11 +134,15 @@ var GMap = function(){
 	};
 
 	self.centerMarker = function(marker) {
+		var self = this;
+
 		self.map.setZoom(13);
 		self.map.setCenter(marker.getPosition());
 	};
 
 	self.recenter = function() {
+
+		var self= this;
 		self.map.setCenter(Model.userLocation);
 	};
 
@@ -205,9 +210,11 @@ var App = {
 				self.gMap.generateMarkers();
 				self.infoWindow.loadEvents();
 				self.gMap.recenter();
+				App.removeLoadingScreen();
 			},
 			error: function(xhr, status, error) {
 				console.log('Error occured while loading events: ' + error);
+				App.removeLoadingScreen();
 
 				if (status == 'error') {
 					self.infoWindow.displayError('default');
@@ -306,6 +313,12 @@ var App = {
 		var self = this;
 
 		self.infoWindow.displayError(type);
+	},
+
+	removeLoadingScreen: function() {
+		var self = this;
+
+		self.infoWindow.removeLoadingScreen();
 	}
 };
 
@@ -324,6 +337,7 @@ var InfoWindow = function() {
 	self.searchKeywords = ko.observable('');
 
 	self.toggleIsOn = ko.observable(false);
+	self.showLoadingScreen = ko.observable(true);
 	self.showEventDescription = ko.observable(false);
 	self.showEventList = ko.observable(true);
 	self.showErrorScreen = ko.observable(false);
@@ -479,6 +493,10 @@ var InfoWindow = function() {
 		}
 
 		return isEventIncludedInFilteredList;
+	};
+
+	self.removeLoadingScreen = function() {
+		self.showLoadingScreen(false);
 	};
 
 };
