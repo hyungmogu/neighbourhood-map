@@ -23,7 +23,7 @@ git clone https://github.com/hyungmogu/udacity-neighbourhood-map
 
 ### Setting up Eventbrite API
 1. Follow [this](https://www.eventbrite.com/support/articles/en_US/How_To/how-to-locate-your-eventbrite-api-user-key?lg=en_US) instruction, and obtain a key
-2. Navigate to the folder containing `app.js`
+2. Navigate to folder containing `app.js`
 ```
 cd <PROJECT REPO>/neighborhood-map/static/js/
 ```
@@ -32,4 +32,4 @@ cd <PROJECT REPO>/neighborhood-map/static/js/
 ## Usage
 ### Viewing Demo
 1. Navigate to `<PROJECT_REPO>/neighborhood_map/`
-2. Open `index.html` with a browser of choice (Google Chrome is recommended).
+2. Open `index.html` with a browser (Google Chrome is recommended).
