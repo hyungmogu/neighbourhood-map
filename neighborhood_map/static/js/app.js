@@ -342,10 +342,7 @@ var InfoWindow = function() {
 			return self.events();
 		}
 
-		// Filter list based on keywords in title, location, and description.
-		//
-		// Also made markers to be filtered on the map as event list are being
-		// filtered.
+		// Filter list based on keywords in title, location, and/or description.
 		var output = ko.utils.arrayFilter(self.events(), function(event){
 
 			return !self.descriptionExists(event) ? self.filterEvent('without_description', event) : self.filterEvent('default', event);
@@ -355,35 +352,6 @@ var InfoWindow = function() {
 		return output;
 
 	});
-
-	self.descriptionExists = function(event) {
-		return typeof event.description != 'undefined' ? true : false;
-	};
-
-	self.filterEvent = function(type, event) {
-
-
-		switch(type){
-			case 'without_description':
-				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
-				break;
-			default:
-				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-					event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
-		}
-
-		if (isEventIncludedInFilteredList) {
-			App.resetMarkerAnimation(event.marker);
-			App.updateMarkerVisibility('show', event.marker);
-		} else {
-			App.resetMarkerAnimation(event.marker);
-			App.updateMarkerVisibility('hide', event.marker);
-		}
-
-		return isEventIncludedInFilteredList;
-	};
 
 	///////////////
 	//
@@ -442,7 +410,7 @@ var InfoWindow = function() {
 	self.goBackToEventList = function() {
 		App.returnToMain();
 
-		// Include this code to resize map when on toggle
+		// Include this code to resize map when on toggle.
 		App.refreshMapDimension();
 	};
 
@@ -469,7 +437,6 @@ var InfoWindow = function() {
 			self.showNotFoundError(false);
 			self.showGMapError(true);
 		}
-
 		// Show error screen.
 		self.showErrorScreen(true);
 		self.showEventList(false);
@@ -483,6 +450,37 @@ var InfoWindow = function() {
 		self.showTimeoutError(false);
 		self.showNotFoundError(false);
 	};
+
+	self.descriptionExists = function(event) {
+		return typeof event.description != 'undefined' ? true : false;
+	};
+
+	self.filterEvent = function(type, event) {
+
+
+		switch(type){
+			case 'without_description':
+				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
+				break;
+			default:
+				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
+		}
+
+		// Filter marker in the process.
+		if (isEventIncludedInFilteredList) {
+			App.resetMarkerAnimation(event.marker);
+			App.updateMarkerVisibility('show', event.marker);
+		} else {
+			App.resetMarkerAnimation(event.marker);
+			App.updateMarkerVisibility('hide', event.marker);
+		}
+
+		return isEventIncludedInFilteredList;
+	};
+
 };
 
 App.init(EVENTBRITE_API_KEY);
