@@ -346,21 +346,44 @@ var InfoWindow = function() {
 		//
 		// Also made markers to be filtered on the map as event list are being
 		// filtered.
-		return ko.utils.arrayFilter(self.events(), function(event){
-			if (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-				event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
-				event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1) {
-				App.resetMarkerAnimation(event.marker);
-				App.updateMarkerVisibility('show', event.marker);
-				return true;
-			} else {
-				App.resetMarkerAnimation(event.marker);
-				App.updateMarkerVisibility('hide', event.marker);
-			}
+		var output = ko.utils.arrayFilter(self.events(), function(event){
+
+			return !self.descriptionExists(event) ? self.filterEvent('without_description', event) : self.filterEvent('default', event);
 
 		});
 
+		return output;
+
 	});
+
+	self.descriptionExists = function(event) {
+		return typeof event.description != 'undefined' ? true : false;
+	};
+
+	self.filterEvent = function(type, event) {
+
+
+		switch(type){
+			case 'without_description':
+				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
+				break;
+			default:
+				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+					event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
+		}
+
+		if (isEventIncludedInFilteredList) {
+			App.resetMarkerAnimation(event.marker);
+			App.updateMarkerVisibility('show', event.marker);
+		} else {
+			App.resetMarkerAnimation(event.marker);
+			App.updateMarkerVisibility('hide', event.marker);
+		}
+
+		return isEventIncludedInFilteredList;
+	};
 
 	///////////////
 	//
