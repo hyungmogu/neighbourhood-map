@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 	<title>Neighborhood Map</title>
-	<link rel="stylesheet" href="/static/style/style.css">
-	<link rel="stylesheet" href="/static/style/lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="/static/style/lib/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="./static/style/style.css">
+	<link rel="stylesheet" href="./static/style/lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./static/style/lib/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
 	<header class="navbar navbar-default">
@@ -23,24 +23,18 @@
 		</section>
 		<section class="info-window" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
 			<div class="header">
-				<form class="form" data-bind="submit: searchEvents">
-					<div class="input-group">
-						<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:searchKeywords">
-						<span class="input-group-btn">
-							<button class="btn btn-default" type="submit">Search</button>
-						</span>
-					</div>
-				</form>
+				<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:searchKeywords, valueUpdate: 'afterkeydown', event: {keyup: filteredEvents().length > 0 ? showMain : displayError('not_found')}">
 			</div>
 			<div class="content">
 
-				<ul class="events list" data-bind="template: {name: 'event-list', foreach: events, as: 'event', if: showEventList}, visible: showEventList"></ul>
+				<ul class="events list" data-bind="template: {name: 'event-list', foreach: filteredEvents, as: 'event', if: showEventList}, visible: showEventList"></ul>
 
 				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: showEventDescription}, visible: showEventDescription"></div>
 				<div class="error" data-bind="visible: showErrorScreen">
 					<div class="not-found" data-bind="template: {name: 'error-not-found', if: showNotFoundError}"></div>
 					<div class="timeout" data-bind="template: {name: 'error-timeout', if: showTimeoutError}"></div>
 					<div class="default" data-bind="template: {name: 'error-default', if: showDefaultError}"></div>
+					<div class="default" data-bind="template: {name: 'error-gmap', if: showGMapError}"></div>
 				</div>
 			</div>
 			<script type="text/html" id="event-list">
@@ -79,11 +73,16 @@
 				<h3>Not Found (404)</h3>
 				<p>Sorry. Error occured while retrieving data.</p>
 			</script>
+			<script type="text/html" id="error-gmap">
+				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
+				<h3>Server Error (500)</h3>
+				<p>Sorry. Something went wrong while loading Google Map API.</p>
+			</script>
 		</section>
 	</main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzjRtlz7LH0-t1hmmSE_yenGqcayD4Euo"></script>
-<script src="/static/js/lib/knockout-3.4.2.js"></script>
-<script src="/static/js/app.js"></script>
+<script src="./static/js/lib/knockout-3.4.2.js"></script>
+<script src="./static/js/app.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?callback=App.gMap.init" onerror="App.displayError('gmap');"></script>
 </html>
