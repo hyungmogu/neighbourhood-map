@@ -456,15 +456,15 @@ var InfoWindow = function() {
 	};
 
 	self.filterEvent = function(type, event) {
-
+		var isEventIncludedInFilteredList;
 
 		switch(type){
 			case 'without_description':
-				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+				isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
 					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
 				break;
 			default:
-				var isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
+				isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
 					event.location.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||
 					event.description.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1);
 		}
