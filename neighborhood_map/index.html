@@ -9,40 +9,38 @@
 	<link rel="stylesheet" href="./static/style/lib/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
-	<div class="loading-screen" data-bind="visible: showLoadingScreen">
+	<div id="loading-screen" data-bind="visible: isVisible">
 		<div>
 			<h2>Events Near you</h2>
 			<p>(Powered by Eventbrite)</p>
-			<p>Please wait while loading...</p>
+			<div class="status">
+				<h4 data-bind="text: statusTitle"></h4>
+				<p data-bind="text: statusDetail"></p>
+			</div>
 		</div>
 	</div>
-	<header class="navbar navbar-default">
+	<header id="navbar" class="navbar navbar-default" data-bind="visible: isVisible">
 		<div class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand">Events Near You</a>
-				<button class="btn btn-default navbar-menu" data-bind="click: activateToggle"><i class="fa fa-bars" aria-hidden="true"></i></button>
+				<button class="btn btn-default navbar-menu" data-bind="click: toggleInfoWindow"><i class="fa fa-bars" aria-hidden="true"></i></button>
 			</div>
 		</div>
 	</header>
-	<main class="app">
+	<main id="main-app" class="app" data-bind="visible: isVisible">
 		<section class="map" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
 			<div id="g-map"></div>
 		</section>
 		<section class="info-window" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
 			<div class="header">
-				<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value:searchKeywords, valueUpdate: 'afterkeydown', event: {keyup: filteredEvents().length > 0 ? showMain : displayError('not_found')}">
+				<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value: searchKeywords, valueUpdate: 'afterkeydown', event: {keyup: filteredEvents().length > 0 ? showMain : throwError('emptyResult')}">
 			</div>
 			<div class="content">
 
 				<ul class="events list" data-bind="template: {name: 'event-list', foreach: filteredEvents, as: 'event', if: showEventList}, visible: showEventList"></ul>
 
-				<div class="event description" data-bind="template: {name: 'event-description', data: event, if: showEventDescription}, visible: showEventDescription"></div>
-				<div class="error" data-bind="visible: showErrorScreen">
-					<div class="not-found" data-bind="template: {name: 'error-not-found', if: showNotFoundError}"></div>
-					<div class="timeout" data-bind="template: {name: 'error-timeout', if: showTimeoutError}"></div>
-					<div class="default" data-bind="template: {name: 'error-default', if: showDefaultError}"></div>
-					<div class="default" data-bind="template: {name: 'error-gmap', if: showGMapError}"></div>
-				</div>
+				<div class="event description" data-bind="template: {name: 'event-description', data: selectedEvent, if: showEventDescription}, visible: showEventDescription"></div>
+				<div class="error" data-bind="template: {name: 'error', if: showErrorScreen}, visible: showErrorScreen"></div>
 			</div>
 			<script type="text/html" id="event-list">
 				<li class="item event" data-bind="click: function(event){$root.loadDescription(event)}">
@@ -65,31 +63,22 @@
 					<a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
 				</div>
 			</script>
-			<script type="text/html" id="error-not-found">
+			<script type="text/html" id="error">
 				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
-				<h3>Empty Result (204)</h3>
-				<p>Sorry. Search result returned empty.</p>
-			</script>
-			<script type="text/html" id="error-timeout">
-				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
-				<h3>Timeout (408)</h3>
-				<p>Sorry. App took too long to retrieve data.</p>
-			</script>
-			<script type="text/html" id="error-default">
-				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
-				<h3>Not Found (404)</h3>
-				<p>Sorry. Error occured while retrieving data.</p>
-			</script>
-			<script type="text/html" id="error-gmap">
-				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
-				<h3>Server Error (500)</h3>
-				<p>Sorry. Something went wrong while loading Google Map API.</p>
+				<h3 data-bind="text: $root.errorTitle"></h3>
+				<p data-bind="text: $root.errorDetail"></p>
 			</script>
 		</section>
 	</main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="./static/js/lib/knockout-3.4.2.js"></script>
+<script src="./static/js/parts/knockout/loadingscreen.js"></script>
+<script src="./static/js/parts/knockout/infowindow.js"></script>
+<script src="./static/js/parts/knockout/header.js"></script>
+<script src="./static/js/parts/gmap/gmap.js"></script>
+<script src="./static/js/parts/event.js"></script>
+<script src="./static/js/setup.js"></script>
 <script src="./static/js/app.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?callback=App.gMap.init" onerror="App.displayError('gmap');"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?callback=Setup.setupGMap" onerror="Setup.throwError('gMapLoadingError');"></script>
 </html>
