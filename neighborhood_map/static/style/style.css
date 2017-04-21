@@ -58,6 +58,7 @@ header {
 }
 
 .map.toggle-on {
+	width: 100%;
 	height: calc(100vh - 52px);
 }
 
@@ -273,7 +274,7 @@ header {
 	/*-- G MAP*/
 
 	.map {
-		width: 100%;
+		width: calc(100% - 350px);
 		height: calc(100vh - 52px);
 		margin: 0;
 	}
@@ -315,7 +316,7 @@ header {
 	/*-- G MAP*/
 
 	.map {
-		width: 100%;
+		width: calc(100% - 380px);
 		height: calc(100vh - 52px);
 		margin : 0;
 	}
@@ -357,7 +358,7 @@ header {
 	/*-- G MAP*/
 
 	.map {
-		width: 100%;
+		width: calc(100% - 430px);
 		height: calc(100vh - 52px);
 		margin: 0;
 	}
