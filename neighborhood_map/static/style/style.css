@@ -10,6 +10,26 @@ ul {
 	list-style-type: none;
 }
 
+#loading-screen {
+    position: fixed;
+    z-index: 99999;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#loading-screen > div {
+	text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#loading-screen .status {
+	margin-top: 6em;
+}
+
 /*- HEADER*/
 
 header {
@@ -44,6 +64,7 @@ header {
 }
 
 .map.toggle-on {
+	width: 100%;
 	height: calc(100vh - 52px);
 }
 
@@ -259,7 +280,7 @@ header {
 	/*-- G MAP*/
 
 	.map {
-		width: 100%;
+		width: calc(100% - 350px);
 		height: calc(100vh - 52px);
 		margin: 0;
 	}
@@ -301,7 +322,7 @@ header {
 	/*-- G MAP*/
 
 	.map {
-		width: 100%;
+		width: calc(100% - 380px);
 		height: calc(100vh - 52px);
 		margin : 0;
 	}
@@ -343,7 +364,7 @@ header {
 	/*-- G MAP*/
 
 	.map {
-		width: 100%;
+		width: calc(100% - 430px);
 		height: calc(100vh - 52px);
 		margin: 0;
 	}
