@@ -1,8 +1,7 @@
 /**
 * event.js
-*   - Stores selective set of data from Eventbrite API
-*   - Used for displaying event list and description
-*   - Also used to modify the behavior of a marker on Google map.
+*   - Stores selective set of data from Eventbrite API and
+*     marker from Google Map API.
 *
 */
 

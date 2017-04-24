@@ -114,9 +114,8 @@ var App = {
     },
 
     /**
-    * @description - informs user of an error that occur after setup. This
-    *                is triggered when something goes wrong with Google Map,
-    *                markers and the view model objects.
+    * @description - informs user of an error that occur. This is triggered
+    *                when something goes wrong after setup
     *
     */
     throwError: function(title, description) {

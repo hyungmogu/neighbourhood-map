@@ -33,9 +33,7 @@ var LoadingScreen = function() {
     };
 
     /**
-    * @description - informs user of what's happening during setup. It is used
-    *                by an object called 'Setup' whenever a process is complete
-    *                or when an error occurs.
+    * @description - informs user of what's happening during setup.
     *
     */
     self.updateStatus = function(title, detail) {

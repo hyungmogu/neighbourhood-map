@@ -103,8 +103,7 @@ var InfoWindow = function() {
     };
 
     /**
-    * @description - populates info-window with events. This is used by
-    *                Setup.loadItems().
+    * @description - populates info-window with events.
     *
     */
     self.loadEvents = function(listOfEvents) {
@@ -114,8 +113,7 @@ var InfoWindow = function() {
 
 
     /**
-    * @description - shows list of events. This is used by App.returnToMain(),
-    *                InfoWindow.loadEvents().
+    * @description - shows list of events.
     *
     */
     self.showMain = function() {
@@ -125,8 +123,7 @@ var InfoWindow = function() {
     };
 
     /**
-    * @description - constructs and shows event description. This is used by
-    *                App.showDetail().
+    * @description - constructs and shows event description.
     *
     */
     self.showDetail = function(event) {
@@ -138,7 +135,7 @@ var InfoWindow = function() {
     };
 
     /**
-    * @description - loads event description in info-window.
+    * @description - loads event description.
     *
     */
     self._selectEvent = function(event) {
@@ -146,8 +143,7 @@ var InfoWindow = function() {
     };
 
     /**
-    * @description - constructs and shows error message. This is triggered
-    *                when App.throwError() is activated.
+    * @description - constructs and shows error message.
     *
     */
     self.showError = function(title, description) {
@@ -160,7 +156,6 @@ var InfoWindow = function() {
 
     /**
     * @description - loads error message.
-    *
     */
     self._loadError = function(title,description) {
         self.errorTitle(title);
@@ -170,7 +165,6 @@ var InfoWindow = function() {
     /**
     * @description - triggers actions associated to the unveiling of event
     *                description.
-    *
     */
     self.loadDescription = function(event) {
         App.showDetail(event);
@@ -180,7 +174,6 @@ var InfoWindow = function() {
     /**
     * @description - triggers actions associated to returning from event
     *                description.
-    *
     */
     self.goBackToEventList = function() {
         App.returnToMain(self.selectedEvent());
@@ -188,17 +181,14 @@ var InfoWindow = function() {
 
 
     /**
-    * @description - hides/shows info-window. This is triggered when menu button,
-    *                is clicked and Header.toggleInfoWindow() is activated.
-    *
+    * @description - hides/shows info-window.
     */
     self.toggle = function() {
         self.toggleIsOn(!self.toggleIsOn());
     };
 
     /**
-    * @description -  handles error in app. This is activated by App.throwError().
-    *
+    * @description -  handles error in app.
     */
     self.throwError = function(type) {
         var title;

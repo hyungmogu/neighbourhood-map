@@ -1,6 +1,6 @@
 /**
 * header.js
-*   - handles all behaviors in header.
+*   - Handles all behaviors in header.
 *   - Uses Knockout.js
 *   - Manages VM part of MVVM model
 *   - Methods are kept as fundamental as possible to reduce redundancy
@@ -21,7 +21,6 @@ var Header = function() {
 
     /**
     * @description - triggers actions that hides/shows info-window.
-    *                InfoWindow.toggle() is activated in the end.
     *
     */
     self.toggleInfoWindow = function() {
@@ -31,7 +30,6 @@ var Header = function() {
     /**
     * @description - unveils header. This is used with LoadingScreen.hide(),
     *                InfoWindow.show() to unveil app at the end of setup.
-    *
     */
     self.show = function() {
         self.isVisible(true);
