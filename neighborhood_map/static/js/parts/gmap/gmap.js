@@ -14,8 +14,7 @@ var GMap = function() {
     self.prevClickedMarker = undefined;
 
     /**
-    * @description - generates map. This is used by Setup._loadMap() after
-    *                downloading Google Map API.
+    * @description - generates map.
     *
     */
     self.generateMap = function(userLocation) {
@@ -25,9 +24,7 @@ var GMap = function() {
 
 
     /**
-    * @description - adds markers on Google map. This is used after
-    *                downloading Google Map API and receiving data
-    *                from Eventbrite.
+    * @description - adds markers to Google map.
     *
     */
     self.addMarkers = function(events) {
@@ -54,10 +51,7 @@ var GMap = function() {
 
 
     /**
-    * @description - stores marker to an object called 'event'. The stored marker
-    *                is used to center Google map about the event's location,
-    *                reset marker animation, animate markers, update
-    *                marker visibiltiy and show event description on click.
+    * @description - stores marker to an object called 'event'.
     *
     *
     */
@@ -67,22 +61,25 @@ var GMap = function() {
     };
 
     /**
-    * @description - re-evalutates the coverage of map to adjust to change
-    *                caused by toggling and/or the resizing of browser
-    *                window.
+    * @description - re-evalutates the coverage of map.
     *
     */
     self.resize = function() {
         google.maps.event.trigger(self.map, 'resize');
     };
 
+    /**
+    * @description - centers Google map about the geolocation of
+    *                the selected marker.
+    *
+    */
     self.centerMarker = function(marker) {
         self.map.setZoom(13);
         self.map.setCenter(marker.getPosition());
     };
 
     /**
-    * @description - triggers app to show the event description of a clicked marker.
+    * @description - triggers app to show event description.
     *
     */
     self.showInfo = function(event) {
@@ -90,8 +87,7 @@ var GMap = function() {
     };
 
     /**
-    * @description - hides/shows markers on Google map. This is used when
-    *                filtering events.
+    * @description - hides/shows the selected marker on Google map.
     *
     */
     self.updateMarkerVisibility = function(type, marker) {
@@ -103,8 +99,7 @@ var GMap = function() {
     };
 
     /**
-    * @description - defines the behavior of a marker prior to
-    *                showing event description
+    * @description - animates markers.
     *
     */
     self.animateMarker = function(event) {

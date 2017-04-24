@@ -240,8 +240,7 @@ var Setup = {
     },
 
     /*
-    *   @description - constructs Google map and markers. This
-    *                 function is activated after downloading Google Map API.
+    *   @description - constructs Google map and markers.
     *
     */
     setupGMap: function() {
