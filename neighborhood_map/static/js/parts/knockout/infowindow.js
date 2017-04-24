@@ -78,7 +78,10 @@ var InfoWindow = function() {
     */
     self._filterEvent = function(type, event) {
         var isEventIncludedInFilteredList;
-
+        /**
+        * Note: The method below is referenced from here: http://codepen.io/NKiD/pen/JRVZgv
+        *
+        */
         switch(type){
             case 'exclude_description':
                 isEventIncludedInFilteredList = (event.name.toLowerCase().indexOf(self.searchKeywords().toLowerCase()) != -1 ||

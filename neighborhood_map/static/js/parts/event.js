@@ -15,6 +15,10 @@ var EventItem = function(event) {
 	};
 
 	self._getTime = function(startingTime){
+		/**
+		* Note: the calculation for remaining time is referenced here: https://docs.microsoft.com/en-us/scripting/javascript/calculating-dates-and-times-javascript
+		*
+		*/
 		var MINUTE_IN_MILLISECONDS = 1000 * 60;
 		var HOUR_IN_MILLISECONDS =  1000 * 60 * 60;
 		var currentDateTime = new Date();
