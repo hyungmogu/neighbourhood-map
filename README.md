@@ -1,7 +1,7 @@
 # Udacity FSND 6th Project: Neighbourhood Map
 This neighbourhood map addresses the problem of where to spend time that's suddenly available in any cities. It displays events near to a user that's starting in less than 24 hours with links for more details.
 
-This project is created using Eventbrite API, Google Map API, Knockout JS, Bootstrap, HTML5, CSS3, Javascript, AJAX, Python 2 and Google App Engine. It is put together using design patterns and object oriented programming.
+This project is created using Eventbrite API, Google Map API, Knockout JS, Bootstrap, HTML5, CSS3, Javascript, AJAX. It is put together using design patterns and object oriented programming.
 
 Note that this project is for demonstration purposes only. The author will not accept any pull requests from third-parties. But, please, free feel to download this repository, and explore the software.
 
@@ -11,7 +11,7 @@ Note that this project is for demonstration purposes only. The author will not a
 - Usage
 
 ## Demo
-Demo of this project can be viewed [here](https://neighborhood-map-162319.appspot.com/)
+Demo of this project can be viewed [here](https://hyungmogu.github.io/udacity-neighbourhood-map/)
 
 ## Installation
 ### Downloading Project Files
