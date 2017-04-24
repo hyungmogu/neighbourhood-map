@@ -1,16 +1,16 @@
 /*GENERAL*/
 
 body {
-	margin: 0;
+    margin: 0;
 }
 
 ul {
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
 }
 
-#loading-screen {
+.loading-screen {
     position: fixed;
     z-index: 99999;
     background-color: white;
@@ -20,376 +20,376 @@ ul {
     align-items: center;
 }
 
-#loading-screen > div {
-	text-align: center;
+.loading-screen > div {
+    text-align: center;
     max-width: 400px;
     margin: 0 auto;
 }
 
-#loading-screen .status {
-	margin-top: 6em;
+.loading-screen .status {
+    margin-top: 6em;
 }
 
 /*- HEADER*/
 
 header {
-	margin: 0 !important;
+    margin: 0 !important;
 }
 
 .navbar-menu {
-	margin: 9px 9px;
-	float: right;
+    margin: 9px 9px;
+    float: right;
 }
 
 /*- MAIN*/
 
 .app {
-	display: flex;
-	flex-wrap: wrap;
-	height: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    height: inherit;
 }
 
 .app > div {
-	height: inherit;
+    height: inherit;
 }
 
 /*-- G MAP*/
 
 .map {
-	background-color: lightgray;
+    background-color: lightgray;
 }
 
-#g-map {
-	height: inherit;
+.g-map {
+    height: inherit;
 }
 
 .map.toggle-on {
-	width: 100%;
-	height: calc(100vh - 52px);
+    width: 100%;
+    height: calc(100vh - 52px);
 }
 
 /*-- LIST-VIEW AND INFO-WINDOW*/
 
 .info-window {
-	background-color: white;
+    background-color: white;
 }
 
 .info-window.toggle-on {
-	display: none;
+    display: none;
 }
 
 .info-window.toggle-override {
-	display: initial !important;
+    display: initial !important;
 }
 
 .info-window .header {
-	border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
 }
 
 .event.item {
-	padding: 5px 15px;
-	border-bottom: 1px solid lightgray;
+    padding: 5px 15px;
+    border-bottom: 1px solid lightgray;
 }
 
 .event.item:hover {
-	background-color: #eee;
+    background-color: #eee;
 }
 
 .event.description {
-	padding: 5px 15px;
+    padding: 5px 15px;
 }
 
 .event.description .hero {
-	margin: 2em 0 0 0;
+    margin: 2em 0 0 0;
 }
 
 .event.description .texts {
-	margin: 2em 0 0 0;
+    margin: 2em 0 0 0;
 }
 
 .event.description .options {
-	margin: 2em 0 2em 0;
+    margin: 2em 0 2em 0;
 }
 
 .event.description .options a {
-	width: 100%;
+    width: 100%;
 }
 
 .event.description img {
-	width: 100%;
+    width: 100%;
 }
 
 .go-back {
-	padding: 5px 0;
+    padding: 5px 0;
 }
 
 .go-back a {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .error {
-	padding: 2em 1em;
-	text-align: center;
+    padding: 2em 1em;
+    text-align: center;
 }
 
 .error-icon {
-	font-size: 10em !important;
+    font-size: 10em !important;
 }
 
 @media screen and (max-width: 405px) {
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: 100%;
-		order: 0;
-		height: 200px;
-		margin: 0 0 1.2em 0;
-	}
+    .map {
+        width: 100%;
+        order: 0;
+        height: 200px;
+        margin: 0 0 1.2em 0;
+    }
 
-	.map.toggle-override {
-		height: 200px;
-	}
+    .map.toggle-override {
+        height: 200px;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		order: 1;
-		width: 100%;
-		padding: 0 0.5em;
-	}
+    .info-window {
+        order: 1;
+        width: 100%;
+        padding: 0 0.5em;
+    }
 
-	.info-window .header {
-		padding: 7px 15px 20px 15px;
-	}
+    .info-window .header {
+        padding: 7px 15px 20px 15px;
+    }
 
-	.error-icon {
-		font-size: 8em !important;
-	}
+    .error-icon {
+        font-size: 8em !important;
+    }
 
 }
 
 @media screen and (min-width: 406px) and (max-width: 520px) {
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: 100%;
-		order: 0;
-		height: 220px;
-		margin: 0 0 1.2em 0;
-	}
+    .map {
+        width: 100%;
+        order: 0;
+        height: 220px;
+        margin: 0 0 1.2em 0;
+    }
 
-	.map.toggle-override {
-		height: 220px !important;
-	}
+    .map.toggle-override {
+        height: 220px !important;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		order: 1;
-		width: 100%;
-		padding: 0 0.5em;
-	}
+    .info-window {
+        order: 1;
+        width: 100%;
+        padding: 0 0.5em;
+    }
 
-	.info-window .header {
-		padding: 7px 15px 20px 15px;
-	}
+    .info-window .header {
+        padding: 7px 15px 20px 15px;
+    }
 
-	.error-icon {
-		font-size: 8em !important;
-	}
+    .error-icon {
+        font-size: 8em !important;
+    }
 
 }
 
 @media screen and (min-width: 521px) and (max-width: 650px) {
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: 100%;
-		order: 0;
-		height: 220px;
-		margin: 0 0 1.2em 0;
-	}
+    .map {
+        width: 100%;
+        order: 0;
+        height: 220px;
+        margin: 0 0 1.2em 0;
+    }
 
-	.map.toggle-override {
-		height: 220px !important;
-	}
+    .map.toggle-override {
+        height: 220px !important;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		order: 1;
-		width: 100%;
-		padding: 0 0.5em;
-	}
+    .info-window {
+        order: 1;
+        width: 100%;
+        padding: 0 0.5em;
+    }
 
-	.info-window .header {
-		padding: 7px 15px 20px 15px;
-	}
+    .info-window .header {
+        padding: 7px 15px 20px 15px;
+    }
 
-	.error-icon {
-		font-size: 8em !important;
-	}
+    .error-icon {
+        font-size: 8em !important;
+    }
 
 }
 
 @media screen and (min-width: 651px) and (max-width: 768px) {
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: 100%;
-		order: 0;
-		height: 230px;
-		margin: 0 0 1.2em 0;
-	}
+    .map {
+        width: 100%;
+        order: 0;
+        height: 230px;
+        margin: 0 0 1.2em 0;
+    }
 
-	.map.toggle-override {
-		height: 230px !important;
-	}
+    .map.toggle-override {
+        height: 230px !important;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		order: 1;
-		width: 100%;
-		padding: 0 0.5em;
-	}
+    .info-window {
+        order: 1;
+        width: 100%;
+        padding: 0 0.5em;
+    }
 
-	.info-window .header {
-		padding: 7px 15px 20px 15px;
-	}
+    .info-window .header {
+        padding: 7px 15px 20px 15px;
+    }
 
-	.error-icon {
-		font-size: 8em !important;
-	}
+    .error-icon {
+        font-size: 8em !important;
+    }
 
 }
 
 @media screen and (min-width: 769px) and (max-width: 991px) {
 
-	/*- HEADER*/
-	.navbar-header {
-		width: 100%;
-	}
+    /*- HEADER*/
+    .navbar-header {
+        width: 100%;
+    }
 
-	/*- MAIN*/
+    /*- MAIN*/
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: calc(100% - 350px);
-		height: calc(100vh - 52px);
-		margin: 0;
-	}
+    .map {
+        width: calc(100% - 350px);
+        height: calc(100vh - 52px);
+        margin: 0;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		width: 350px;
-		position: fixed;
-	    top: 52px;
-	    right: 0;
-	    bottom: 0;
-	}
+    .info-window {
+        width: 350px;
+        position: fixed;
+        top: 52px;
+        right: 0;
+        bottom: 0;
+    }
 
-	.info-window .header {
-		padding: 20px 15px;
-	}
+    .info-window .header {
+        padding: 20px 15px;
+    }
 
-	.info-window .content {
-		height: calc(100% - 75px);
-		overflow-y: scroll
-	}
+    .info-window .content {
+        height: calc(100% - 75px);
+        overflow-y: scroll
+    }
 
-	.error-icon {
-		font-size: 10em !important;
-	}
+    .error-icon {
+        font-size: 10em !important;
+    }
 
 }
 
 @media screen and (min-width: 992px) and (max-width: 1170px) {
 
-	/*- HEADER*/
-	.navbar-header {
-		width: 100%;
-	}
+    /*- HEADER*/
+    .navbar-header {
+        width: 100%;
+    }
 
-	/*- MAIN*/
+    /*- MAIN*/
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: calc(100% - 380px);
-		height: calc(100vh - 52px);
-		margin : 0;
-	}
+    .map {
+        width: calc(100% - 380px);
+        height: calc(100vh - 52px);
+        margin : 0;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		width: 380px;
-		position: fixed;
-	    top: 52px;
-	    right: 0;
-	    bottom: 0;
-	}
+    .info-window {
+        width: 380px;
+        position: fixed;
+        top: 52px;
+        right: 0;
+        bottom: 0;
+    }
 
-	.info-window .header {
-		padding: 20px 15px;
-	}
+    .info-window .header {
+        padding: 20px 15px;
+    }
 
-	.info-window .content {
-		height: calc(100% - 75px);
-		overflow-y: scroll;
-	}
+    .info-window .content {
+        height: calc(100% - 75px);
+        overflow-y: scroll;
+    }
 
-	.error-icon {
-		font-size: 10em !important;
-	}
+    .error-icon {
+        font-size: 10em !important;
+    }
 
 }
 
 @media screen and (min-width: 1171px) {
 
-	/*- HEADER*/
-	.navbar-header {
-		width: 100%;
-	}
+    /*- HEADER*/
+    .navbar-header {
+        width: 100%;
+    }
 
-	/*- MAIN*/
+    /*- MAIN*/
 
-	/*-- G MAP*/
+    /*-- G MAP*/
 
-	.map {
-		width: calc(100% - 430px);
-		height: calc(100vh - 52px);
-		margin: 0;
-	}
+    .map {
+        width: calc(100% - 430px);
+        height: calc(100vh - 52px);
+        margin: 0;
+    }
 
-	/*-- LIST-VIEW AND INFO-WINDOW*/
+    /*-- LIST-VIEW AND INFO-WINDOW*/
 
-	.info-window {
-		width: 430px;
-		position: fixed;
-	    top: 52px;
-	    right: 0;
-	    bottom: 0;
-	}
+    .info-window {
+        width: 430px;
+        position: fixed;
+        top: 52px;
+        right: 0;
+        bottom: 0;
+    }
 
-	.info-window .header {
-		padding: 20px 15px;
-	}
+    .info-window .header {
+        padding: 20px 15px;
+    }
 
-	.info-window .content {
-		height: calc(100% - 75px);
-		overflow-y: scroll;
-	}
+    .info-window .content {
+        height: calc(100% - 75px);
+        overflow-y: scroll;
+    }
 
-	.error-icon {
-		font-size: 10em !important;
-	}
+    .error-icon {
+        font-size: 10em !important;
+    }
 
 }

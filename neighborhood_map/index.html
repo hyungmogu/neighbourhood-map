@@ -1,84 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>Neighborhood Map</title>
-	<link rel="stylesheet" href="./static/style/style.css">
-	<link rel="stylesheet" href="./static/style/lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="./static/style/lib/font-awesome/css/font-awesome.min.css">
+    <title>Neighborhood Map</title>
+    <link rel="stylesheet" href="./static/style/style.css">
+    <link rel="stylesheet" href="./static/style/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/style/lib/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
-	<div id="loading-screen" data-bind="visible: isVisible">
-		<div>
-			<h2>Events Near you</h2>
-			<p>(Powered by Eventbrite)</p>
-			<div class="status">
-				<h4 data-bind="text: statusTitle"></h4>
-				<p data-bind="text: statusDetail"></p>
-			</div>
-		</div>
-	</div>
-	<header id="navbar" class="navbar navbar-default" data-bind="visible: isVisible">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand">Events Near You</a>
-				<button class="btn btn-default navbar-menu" data-bind="click: toggleInfoWindow"><i class="fa fa-bars" aria-hidden="true"></i></button>
-			</div>
-		</div>
-	</header>
-	<main id="main-app" class="app" data-bind="visible: isVisible">
-		<section class="map" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
-			<div id="g-map"></div>
-		</section>
-		<section class="info-window" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
-			<div class="header">
-				<input type="text" class="form-control" placeholder="Search Event Here" data-bind="value: searchKeywords, valueUpdate: 'afterkeydown', event: {keyup: filteredEvents().length > 0 ? showMain : throwError('emptyResult')}">
-			</div>
-			<div class="content">
+    <div id="loading-screen" class="loading-screen" data-bind="visible: isVisible">
+        <div>
+            <h2>Events Near you</h2>
+            <p>(Powered by Eventbrite)</p>
+            <div class="status">
+                <h4 data-bind="text: statusTitle"></h4>
+                <p data-bind="text: statusDetail"></p>
+            </div>
+        </div>
+    </div>
+    <header id="navbar" class="navbar navbar-default" data-bind="visible: isVisible">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">Events Near You</a>
+                <button class="btn btn-default navbar-menu" data-bind="click: toggleInfoWindow"><i class="fa fa-bars" aria-hidden="true"></i></button>
+            </div>
+        </div>
+    </header>
+    <main id="main-app" class="app" data-bind="visible: isVisible">
+        <section class="map" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
+            <div id="g-map" class="g-map"></div>
+        </section>
+        <section class="info-window" data-bind="css: {'toggle-on': toggleIsOn, 'toggle-override': showEventDescription}">
+            <div class="header">
+                <input type="text" class="form-control" placeholder="Search Event Here" data-bind="value: searchKeywords, valueUpdate: 'afterkeydown', event: {keyup: filteredEvents().length > 0 ? showMain : throwError('emptyResult')}">
+            </div>
+            <div class="content">
 
-				<ul class="events list" data-bind="template: {name: 'event-list', foreach: filteredEvents, as: 'event', if: showEventList}, visible: showEventList"></ul>
+                <ul class="events list" data-bind="template: {name: 'event-list', foreach: filteredEvents, as: 'event', if: showEventList}, visible: showEventList"></ul>
 
-				<div class="event description" data-bind="template: {name: 'event-description', data: selectedEvent, if: showEventDescription}, visible: showEventDescription"></div>
-				<div class="error" data-bind="template: {name: 'error', if: showErrorScreen}, visible: showErrorScreen"></div>
-			</div>
-			<script type="text/html" id="event-list">
-				<li class="item event" data-bind="click: function(event){$root.loadDescription(event)}">
-					<h4 class="title" data-bind="text:event.name"></h4>
-					<p class="location" data-bind="text:event.location"></p>
-					<p class="starting-time" data-bind="html:event.time"></p>
-				</li>
-			</script>
-			<script type="text/html" id="event-description">
-				<div class="go-back">
-					<a data-bind="click: $root.goBackToEventList">Go back</a>
-				</div>
-				<div class="hero">
-					<h3 class="title" data-bind="text:name"></h3>
-					<p class="location" data-bind="text:location"></p>
-					<p class="time" data-bind="html:time"></p>
-				</div>
-				<div class="texts" data-bind="html:description"></div>
-				<div class="options">
-					<a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
-				</div>
-			</script>
-			<script type="text/html" id="error">
-				<i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
-				<h3 data-bind="text: $root.errorTitle"></h3>
-				<p data-bind="text: $root.errorDetail"></p>
-			</script>
-		</section>
-	</main>
+                <div class="event description" data-bind="template: {name: 'event-description', data: selectedEvent, if: showEventDescription}, visible: showEventDescription"></div>
+                <div class="error" data-bind="template: {name: 'error', if: showErrorScreen}, visible: showErrorScreen"></div>
+            </div>
+            <script type="text/html" id="event-list">
+                <li class="item event" data-bind="click: function(event){$root.loadDescription(event)}">
+                    <h4 class="title" data-bind="text:event.name"></h4>
+                    <p class="location" data-bind="text:event.location"></p>
+                    <p class="starting-time" data-bind="html:event.time"></p>
+                </li>
+            </script>
+            <script type="text/html" id="event-description">
+                <div class="go-back">
+                    <a data-bind="click: $root.goBackToEventList">Go back</a>
+                </div>
+                <div class="hero">
+                    <h3 class="title" data-bind="text:name"></h3>
+                    <p class="location" data-bind="text:location"></p>
+                    <p class="time" data-bind="html:time"></p>
+                </div>
+                <div class="texts" data-bind="html:description"></div>
+                <div class="options">
+                    <a class="btn btn-success" data-bind="attr:{href:url}">Learn More</a>
+                </div>
+            </script>
+            <script type="text/html" id="error">
+                <i class = "fa fa-frown-o fa-5 error-icon" aria-hidden="true"></i>
+                <h3 data-bind="text: $root.errorTitle"></h3>
+                <p data-bind="text: $root.errorDetail"></p>
+            </script>
+        </section>
+    </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="./static/js/lib/knockout-3.4.2.js"></script>
+    <script src="./static/js/parts/knockout/loadingscreen.js"></script>
+    <script src="./static/js/parts/knockout/infowindow.js"></script>
+    <script src="./static/js/parts/knockout/header.js"></script>
+    <script src="./static/js/parts/gmap/gmap.js"></script>
+    <script src="./static/js/parts/event.js"></script>
+    <script src="./static/js/setup.js"></script>
+    <script src="./static/js/app.js"></script>
 </body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="./static/js/lib/knockout-3.4.2.js"></script>
-<script src="./static/js/parts/knockout/loadingscreen.js"></script>
-<script src="./static/js/parts/knockout/infowindow.js"></script>
-<script src="./static/js/parts/knockout/header.js"></script>
-<script src="./static/js/parts/gmap/gmap.js"></script>
-<script src="./static/js/parts/event.js"></script>
-<script src="./static/js/setup.js"></script>
-<script src="./static/js/app.js"></script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?callback=Setup.setupGMap" onerror="Setup.throwError('gMapLoadingError');"></script>
 </html>
