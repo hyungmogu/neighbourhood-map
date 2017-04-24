@@ -6,8 +6,12 @@ This project is created using Eventbrite API, Google Map API, Knockout JS, Boots
 Note that this project is for demonstration purposes only. The author will not accept any pull requests from third-parties. But, please, free feel to download this repository, and explore the software.
 
 ## Table of Contents
+- Demo
 - Installation
 - Usage
+
+## Demo
+Demo of this project can be viewed [here](https://neighborhood-map-162319.appspot.com/)
 
 ## Installation
 ### Downloading Project Files

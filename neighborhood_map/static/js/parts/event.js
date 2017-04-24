@@ -1,4 +1,14 @@
+/**
+* event.js
+*   - Stores selective set of data from Eventbrite API
+*   - Used for displaying event list and description
+*   - Also used to modify the behavior of a marker on Google map.
+*
+*/
+
 var EventItem = function(event) {
+	'use strict';
+
 	var self = this;
 
 	self._getLocation = function(address, city) {
