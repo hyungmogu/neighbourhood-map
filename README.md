@@ -11,14 +11,14 @@ Note that this project is for demonstration purposes only. The author will not a
 - Usage
 
 ## Demo
-Demo of this project can be viewed [here](https://hyungmogu.github.io/udacity-neighbourhood-map/)
+Demo of this project can be viewed [here](https://hyungmogu.github.io/neighbourhood-map/)
 
 ## Installation
 ### Downloading Project Files
 1. Navigate to a directory of choice
 2. Download the repository
 ```
-git clone https://github.com/hyungmogu/udacity-neighbourhood-map
+git clone https://github.com/hyungmogu/neighbourhood-map
 ```
 
 ### Setting up Eventbrite API
